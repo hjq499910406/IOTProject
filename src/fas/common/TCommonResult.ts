@@ -1,16 +1,16 @@
 
 // 返回值
 export class TCommonResult {
-  ActionID?: string;   
-  ActionCode?: string;   
-  ActionName?: string;   
-  ResultType?: number;   
-  EntityType?: number;   
-  DataContent?: string;   
-  Record?:Any;
-  List?:Array;
-  Count?:number;
-  constructor(){
+    ActionID?: string;   
+    ActionCode?: string;   
+    ActionName?: string;   
+    ResultType?: number;   
+    EntityType?: number;   
+    DataContent?: string;   
+    Record?:Any
+    List?:Array
+    Count?:number
+constructor(){
     this.ActionID = null;
     this.ActionCode = null;
     this.ActionName = null;
@@ -20,5 +20,5 @@ export class TCommonResult {
     this.Record = null;
     this.List = null;
     this.Count = null;
-  }
+}
 }

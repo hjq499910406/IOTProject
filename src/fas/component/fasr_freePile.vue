@@ -2,6 +2,7 @@
     <div v-show='mappingProps && mappingProps.visible'>
         <div :ref='el => Widget["fasr_div_625153_Copydc625153_Copy"] = el' v-show="!LocalVars.isDetail"
             style='flex-direction:column;  position: relative;   flex-wrap:nowrap;    display:flex;  padding-bottom:16px;  padding-top:16px;  width:100%;    row-gap:16px;        border-color:#e0e0e0;      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);  border-style:solid;    border-top-width:1px;    border-left-width:1px;    border-right-width:1px;    border-bottom-width:1px;    border-radius:8px;    outline:0!important'
+            :style="cardContainerStyle"
             class='fasr_div_625153_Copydc625153_Copy tr-div-default' :tabIndex='-1'
             instanceCode='fasr_div_625153_Copydc625153_Copy' @mouseover.stop='iconOver' @mouseleave='iconLeave'
             @click.stop='iconClick'>
@@ -11,8 +12,7 @@
                 class='fasr_div_a625299_Copyaff625299_Copy' :tabIndex='-1'
                 instanceCode='fasr_div_a625299_Copyaff625299_Copy'>
                 <div>
-                    <span
-                        style="padding: 2px 4px;border-radius: 4px;background: #F6ECFF;color: #AF36FF;font-size: 12px;margin-left: 10px;margin-right: 8px;">空闲</span>
+                    <span :style="statusBadgeStyle">{{ statusLabel }}</span>
                     <t-label :ref='el => Widget["fasr_label_901216_Copycf901216_Copy"] = el'
                         style='font-family:AlibabaPuHuiTi;    font-weight:500;    font-size:14px;    line-height:100%;    letter-spacing:0px;    color:rgba(0,0,0,0.80);    vertical-align: middle'
                         class='fasr_label_901216_Copycf901216_Copy' instanceCode='fasr_label_901216_Copycf901216_Copy'
@@ -26,8 +26,8 @@
                         class='fasr_div_cd427103_Copyc427103_Copy tr-div-default' :tabIndex='-1'
                         instanceCode='fasr_div_cd427103_Copyc427103_Copy'>
                         <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="42" height="42" rx="21" fill="#F6ECFF" />
-                            <path d="M17.325 29.0324L18.8265 25.4414H15.624L20.9055 20.3594L19.4355 23.8874H22.386L17.325 29.0324ZM15.771 13.5134C15.771 13.0514 16.17 12.6734 16.6635 12.6734H21.672C22.1655 12.6734 22.5645 13.0514 22.5645 13.5134V18.2069C22.5645 18.6689 22.1655 19.0469 21.672 19.0469H16.653C16.1595 19.0469 15.7605 18.6689 15.7605 18.2069C15.771 18.2069 15.771 13.5134 15.771 13.5134ZM29.316 14.7944C28.644 14.2274 27.51 13.2929 27.174 12.9674C26.985 12.7889 26.5335 12.6734 26.2395 12.9674C25.9455 13.2509 26.082 13.6184 26.292 13.8074C26.5965 14.0804 27.258 14.6054 27.6465 14.9939C27.3315 15.3614 26.796 15.7499 26.4705 16.0964C26.4285 16.1384 26.4285 16.1909 26.4285 16.2119C26.4285 16.4114 26.439 16.5374 26.439 16.6214C26.439 16.6949 26.5335 16.7264 26.565 16.7264H28.2345C28.3395 16.7264 28.371 16.8314 28.371 16.8314V26.9219C28.371 27.4889 28.0455 27.6569 27.7095 27.6569C27.3735 27.6569 27.0165 27.4784 27.0165 26.9219V18.6794C27.0165 17.9339 26.922 17.5874 26.0295 17.5559C25.809 17.5454 24.927 17.5559 24.444 17.5559V12.2849C24.444 11.5919 23.8455 11.0249 23.1105 11.0249H15.0045C14.2695 11.0249 13.671 11.5814 13.671 12.2849V29.1584H12.9045C12.6 29.1584 12.3585 29.3894 12.3585 29.6729V30.4289C12.3585 30.7229 12.6105 30.9644 12.9045 30.9644H25.179C25.473 30.9644 25.725 30.7019 25.725 30.4289V29.6729C25.725 29.3789 25.473 29.1584 25.179 29.1584H24.444V18.7529H25.3575C25.683 18.7529 25.7145 19.0574 25.7145 19.0574V27.0059C25.7145 29.0324 27.4995 29.0534 27.699 29.0534C27.972 29.0534 29.6415 29.0534 29.6415 27.0269V15.3614C29.652 15.3614 29.6625 15.0884 29.316 14.7944Z" fill="#AF36FF"/>
+                            <rect width="42" height="42" rx="21" :fill="statusIconBackground" />
+                            <path d="M17.325 29.0324L18.8265 25.4414H15.624L20.9055 20.3594L19.4355 23.8874H22.386L17.325 29.0324ZM15.771 13.5134C15.771 13.0514 16.17 12.6734 16.6635 12.6734H21.672C22.1655 12.6734 22.5645 13.0514 22.5645 13.5134V18.2069C22.5645 18.6689 22.1655 19.0469 21.672 19.0469H16.653C16.1595 19.0469 15.7605 18.6689 15.7605 18.2069C15.771 18.2069 15.771 13.5134 15.771 13.5134ZM29.316 14.7944C28.644 14.2274 27.51 13.2929 27.174 12.9674C26.985 12.7889 26.5335 12.6734 26.2395 12.9674C25.9455 13.2509 26.082 13.6184 26.292 13.8074C26.5965 14.0804 27.258 14.6054 27.6465 14.9939C27.3315 15.3614 26.796 15.7499 26.4705 16.0964C26.4285 16.1384 26.4285 16.1909 26.4285 16.2119C26.4285 16.4114 26.439 16.5374 26.439 16.6214C26.439 16.6949 26.5335 16.7264 26.565 16.7264H28.2345C28.3395 16.7264 28.371 16.8314 28.371 16.8314V26.9219C28.371 27.4889 28.0455 27.6569 27.7095 27.6569C27.3735 27.6569 27.0165 27.4784 27.0165 26.9219V18.6794C27.0165 17.9339 26.922 17.5874 26.0295 17.5559C25.809 17.5454 24.927 17.5559 24.444 17.5559V12.2849C24.444 11.5919 23.8455 11.0249 23.1105 11.0249H15.0045C14.2695 11.0249 13.671 11.5814 13.671 12.2849V29.1584H12.9045C12.6 29.1584 12.3585 29.3894 12.3585 29.6729V30.4289C12.3585 30.7229 12.6105 30.9644 12.9045 30.9644H25.179C25.473 30.9644 25.725 30.7019 25.725 30.4289V29.6729C25.725 29.3789 25.473 29.1584 25.179 29.1584H24.444V18.7529H25.3575C25.683 18.7529 25.7145 19.0574 25.7145 19.0574V27.0059C25.7145 29.0324 27.4995 29.0534 27.699 29.0534C27.972 29.0534 29.6415 29.0534 29.6415 27.0269V15.3614C29.652 15.3614 29.6625 15.0884 29.316 14.7944Z" :fill="statusIconColor"/>
                         </svg>
 
                     </div>
@@ -133,14 +133,14 @@
 
         <div :ref='el => Widget["fasr_div_7dc379"] = el' v-show="LocalVars.isDetail"
             style='flex-direction:column; position: relative;      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);  flex-wrap:nowrap;  padding-top:16px;  display:flex;  min-height: 240px;  width:100%;    row-gap:16px;    padding-bottom:16px;        border-color:#e0e0e0;    border-style:solid;    border-top-width:1px;    border-left-width:1px;    border-right-width:1px;    border-bottom-width:1px;    border-radius:8px;    outline:0!important'
+            :style="cardContainerStyle"
             class='fasr_div_7dc379 tr-div-default' :tabIndex='-1' instanceCode='fasr_div_7dc379'>
             <div :ref='el => Widget["fasr_div_a625299_Copyaff625299_Copy"] = el'
                 style='flex-direction:column;    flex-wrap:nowrap;    justify-content:flex-start;      display:flex; gap:12px;'
                 class='fasr_div_a625299_Copyaff625299_Copy' :tabIndex='-1'
                 instanceCode='fasr_div_a625299_Copyaff625299_Copy'>
                 <div>
-                    <span
-                        style="padding: 2px 4px;border-radius: 4px;background: #F6ECFF;color: #AF36FF;font-size: 12px;margin-left: 10px;margin-right: 8px;">空闲</span>
+                    <span :style="statusBadgeStyle">{{ statusLabel }}</span>
                     <t-label :ref='el => Widget["fasr_label_901216_Copycf901216_Copy"] = el'
                         style='font-family:AlibabaPuHuiTi;    font-weight:500;    font-size:14px;    line-height:100%;    letter-spacing:0px;    color:rgba(0,0,0,0.80);    vertical-align: middle'
                         class='fasr_label_901216_Copycf901216_Copy' instanceCode='fasr_label_901216_Copycf901216_Copy'
@@ -154,8 +154,8 @@
                         class='fasr_div_cd427103_Copyc427103_Copy tr-div-default' :tabIndex='-1'
                         instanceCode='fasr_div_cd427103_Copyc427103_Copy'>
                         <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="42" height="42" rx="21" fill="#F6ECFF" />
-                            <path d="M17.325 29.0324L18.8265 25.4414H15.624L20.9055 20.3594L19.4355 23.8874H22.386L17.325 29.0324ZM15.771 13.5134C15.771 13.0514 16.17 12.6734 16.6635 12.6734H21.672C22.1655 12.6734 22.5645 13.0514 22.5645 13.5134V18.2069C22.5645 18.6689 22.1655 19.0469 21.672 19.0469H16.653C16.1595 19.0469 15.7605 18.6689 15.7605 18.2069C15.771 18.2069 15.771 13.5134 15.771 13.5134ZM29.316 14.7944C28.644 14.2274 27.51 13.2929 27.174 12.9674C26.985 12.7889 26.5335 12.6734 26.2395 12.9674C25.9455 13.2509 26.082 13.6184 26.292 13.8074C26.5965 14.0804 27.258 14.6054 27.6465 14.9939C27.3315 15.3614 26.796 15.7499 26.4705 16.0964C26.4285 16.1384 26.4285 16.1909 26.4285 16.2119C26.4285 16.4114 26.439 16.5374 26.439 16.6214C26.439 16.6949 26.5335 16.7264 26.565 16.7264H28.2345C28.3395 16.7264 28.371 16.8314 28.371 16.8314V26.9219C28.371 27.4889 28.0455 27.6569 27.7095 27.6569C27.3735 27.6569 27.0165 27.4784 27.0165 26.9219V18.6794C27.0165 17.9339 26.922 17.5874 26.0295 17.5559C25.809 17.5454 24.927 17.5559 24.444 17.5559V12.2849C24.444 11.5919 23.8455 11.0249 23.1105 11.0249H15.0045C14.2695 11.0249 13.671 11.5814 13.671 12.2849V29.1584H12.9045C12.6 29.1584 12.3585 29.3894 12.3585 29.6729V30.4289C12.3585 30.7229 12.6105 30.9644 12.9045 30.9644H25.179C25.473 30.9644 25.725 30.7019 25.725 30.4289V29.6729C25.725 29.3789 25.473 29.1584 25.179 29.1584H24.444V18.7529H25.3575C25.683 18.7529 25.7145 19.0574 25.7145 19.0574V27.0059C25.7145 29.0324 27.4995 29.0534 27.699 29.0534C27.972 29.0534 29.6415 29.0534 29.6415 27.0269V15.3614C29.652 15.3614 29.6625 15.0884 29.316 14.7944Z" fill="#AF36FF"/>
+                            <rect width="42" height="42" rx="21" :fill="statusIconBackground" />
+                            <path d="M17.325 29.0324L18.8265 25.4414H15.624L20.9055 20.3594L19.4355 23.8874H22.386L17.325 29.0324ZM15.771 13.5134C15.771 13.0514 16.17 12.6734 16.6635 12.6734H21.672C22.1655 12.6734 22.5645 13.0514 22.5645 13.5134V18.2069C22.5645 18.6689 22.1655 19.0469 21.672 19.0469H16.653C16.1595 19.0469 15.7605 18.6689 15.7605 18.2069C15.771 18.2069 15.771 13.5134 15.771 13.5134ZM29.316 14.7944C28.644 14.2274 27.51 13.2929 27.174 12.9674C26.985 12.7889 26.5335 12.6734 26.2395 12.9674C25.9455 13.2509 26.082 13.6184 26.292 13.8074C26.5965 14.0804 27.258 14.6054 27.6465 14.9939C27.3315 15.3614 26.796 15.7499 26.4705 16.0964C26.4285 16.1384 26.4285 16.1909 26.4285 16.2119C26.4285 16.4114 26.439 16.5374 26.439 16.6214C26.439 16.6949 26.5335 16.7264 26.565 16.7264H28.2345C28.3395 16.7264 28.371 16.8314 28.371 16.8314V26.9219C28.371 27.4889 28.0455 27.6569 27.7095 27.6569C27.3735 27.6569 27.0165 27.4784 27.0165 26.9219V18.6794C27.0165 17.9339 26.922 17.5874 26.0295 17.5559C25.809 17.5454 24.927 17.5559 24.444 17.5559V12.2849C24.444 11.5919 23.8455 11.0249 23.1105 11.0249H15.0045C14.2695 11.0249 13.671 11.5814 13.671 12.2849V29.1584H12.9045C12.6 29.1584 12.3585 29.3894 12.3585 29.6729V30.4289C12.3585 30.7229 12.6105 30.9644 12.9045 30.9644H25.179C25.473 30.9644 25.725 30.7019 25.725 30.4289V29.6729C25.725 29.3789 25.473 29.1584 25.179 29.1584H24.444V18.7529H25.3575C25.683 18.7529 25.7145 19.0574 25.7145 19.0574V27.0059C25.7145 29.0324 27.4995 29.0534 27.699 29.0534C27.972 29.0534 29.6415 29.0534 29.6415 27.0269V15.3614C29.652 15.3614 29.6625 15.0884 29.316 14.7944Z" :fill="statusIconColor"/>
                         </svg>
 
                     </div>
@@ -939,6 +939,10 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  variant: {
+    type: String,
+    default: 'free'
+  },
 });
 const mappingProps = reactive({ ...props });
 const mappingExpose = toRefs(reactive({ ...props }));
@@ -952,6 +956,30 @@ defineExpose({
   visible: mappingExpose.visible
 });
 const LocalVars = props.localVars;
+const isOtherVariant = computed(() => props.variant === 'other');
+const statusLabel = computed(() => (isOtherVariant.value ? '其他' : '空闲'));
+const statusBadgeStyle = computed(() => ({
+  padding: '2px 4px',
+  borderRadius: '4px',
+  background: isOtherVariant.value ? '#F0F2F5' : '#F6ECFF',
+  color: isOtherVariant.value ? 'rgba(0, 0, 0, 0.80)' : '#AF36FF',
+  fontSize: '12px',
+  marginLeft: '10px',
+  marginRight: '8px'
+}));
+const statusIconBackground = computed(() => (isOtherVariant.value ? '#F0F2F5' : '#F6ECFF'));
+const statusIconColor = computed(() => (isOtherVariant.value ? '#898989' : '#AF36FF'));
+const cardContainerStyle = computed(() => {
+  if (!isOtherVariant.value) {
+    return {};
+  }
+
+  return {
+    borderColor: '#DFE0E2',
+    boxShadow: 'none',
+    opacity: '100%'
+  };
+});
 const fireUCEvent = defineEmits([ 'OnFireEvent' ]);
 const Widget = {
   FireUCEvent: fireUCEvent

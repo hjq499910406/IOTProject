@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "pnpm install && vite",
+    "dev": "pnpm run vite:dev",
     "vite:dev": "pnpm install && vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "prebuild:page": "echo need to set: nvm use 18.18.0",
@@ -18,16 +18,13 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "format": "prettier --write src/",
-    "upgrade": "twu",
-    "upgrade:s": "twu --start"
+    "format": "prettier --write src/"
   },
   "dependencies": {
-    "@teld/dev-update": "^1.0.29",
     "@teld/q-components": "^0.1.8",
     "@teld/t-components": "^0.1.1",
     "@vitest/coverage-v8": "^1.0.1",
-    "hls.js": "^1.6.15",
+    "hls.js": "^1.6.16",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"
   },

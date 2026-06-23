@@ -5,7 +5,6 @@ import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import legacy from '@vitejs/plugin-legacy';
 import { createHtmlPlugin } from 'vite-plugin-html';
-import devUpgradePlugin from './plugins/vite-plugin-dev-upgrade';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,7 +12,7 @@ export default defineConfig({
     host:'0.0.0.0',
     allowedHosts:true,
     watch:{
-      ignored: [ '**/node_modules/**', '**/dist/**','**/.upgradeTempDir/**' ],
+      ignored: [ '**/node_modules/**', '**/dist/**' ],
       usePolling: true,
       interval: 1000
     }
@@ -35,7 +34,6 @@ export default defineConfig({
     }
   },
   plugins: [
-    devUpgradePlugin(),
     vue(),
     vueJsx(),
     legacy({

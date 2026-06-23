@@ -1,101 +1,73 @@
 <template>
-    <div v-show='mappingProps && mappingProps.visible'>
-        <div style=' display:flex;padding: 12px;padding-top: 0; border-radius: 12px; flex-direction:row;  justify-content:flex-start;  flex-wrap:wrap;  gap:10px;       outline:0!important'
-            class='tr-div-default pile piles' :tabIndex='-1'>
-            <div v-for='pile in LocalVars.Piles' style='    outline:0!important' class='tr-div-default pile'
-                :tabIndex='-1'>
-                <component :is="getpageName(pile.PileState)" :PileData="pile" :isShow="LocalVars.isMaskOpen"
-                    :isDetail="LocalVars.isDetail" :infoSet="LocalVars.infoSet" @closeCharge="refreshPileList"
-                    @openCharge="refreshPileList"></component>
-
+    <div v-show='visible'>
+        <div class='tr-div-default pile piles fasr-terminals' :tabIndex='-1'>
+            <div v-for='pile in localVars.Piles' :key="pile.PileID || pile.PileCode || pile.PileName"
+                class='tr-div-default pile fasr-terminals__item' :tabIndex='-1'>
+                <UCTerminalCard :stateType="getTerminalStateType(pile.PileState)" v-bind="getTerminalCardProps(pile)"
+                    @closeCharge="refreshPileList" @openCharge="refreshPileList" />
             </div>
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import { DataQueryClass } from '../models/DataQueryClass';
-import { DataQueryClassAsync } from '../models/DataQueryClassAsync';
-import { ActionClass } from '../models/ActionClass';
-import { ActionClassAsync } from '../models/ActionClassAsync';
-import '../action/Action_GetStaPiles.ts';
-import '../action/Action_GetStaAndPileCount.ts';
-import '../action/Action_GetPowerCharingAbnormalData.ts';
-const DataQuery = new DataQueryClass();
-DataQuery.Promise = new DataQueryClassAsync();
-const Action = new ActionClass();
-Action.Promise = new ActionClassAsync();
+import { toRef } from 'vue';
+import UCTerminalCard from '../../fas/uicontrol/UC_TerminalCard.vue';
 
-
-import { ref, onMounted, reactive, toRefs, watch } from 'vue';
-import UC_FaultyTerminal from '../../fas/uicontrol/UC_FaultyTerminal/UC_FaultyTerminal.vue';
-import UC_OffGridTerminal from '../../fas/uicontrol/UC_OffGridTerminal/UC_OffGridTerminal.vue';
-import UC_GunsInsertedTerminal from '../../fas/uicontrol/UC_GunsInsertedTerminal/UC_GunsInsertedTerminal.vue';  //
-import UC_ChargingTerminal from '../../fas/uicontrol/UC_ChargingTerminal/UC_ChargingTerminal.vue';
-import UC_ChargeFullTerminal from '../../fas/uicontrol/UC_ChargeFullTerminal/UC_ChargeFullTerminal.vue';
-import UC_FreeTerminal from '../../fas/uicontrol/UC_FreeTerminal/UC_FreeTerminal.vue';
-import UC_OtherTerminal from '../../fas/uicontrol/UC_OtherTerminal/UC_OtherTerminal.vue';
-
-const UCControl = {
-  8: UC_FaultyTerminal,//故障
-  12: UC_FaultyTerminal,//故障
-  1: UC_OffGridTerminal,//离网        1
-  3: UC_GunsInsertedTerminal,//插枪   1
-  6: UC_ChargingTerminal,//充电中  
-  4: UC_ChargeFullTerminal,//充满   4
-  2: UC_FreeTerminal,//空闲   
-  5: UC_OtherTerminal,//其他   
+type TerminalLocalVars = {
+  Piles: any[],
+  isMaskOpen: boolean,
+  isDetail: boolean,
+  infoSet: any
 };
+
 const props = defineProps({
-  localVars: Object,
+  localVars: {
+    type: Object as () => TerminalLocalVars,
+    required: true
+  },
   visible: {
     type: Boolean,
     default: true
   },
 });
-const mappingProps = reactive({ ...props });
-const mappingExpose = toRefs(reactive({ ...props }));
-watch(mappingExpose.visible, (newValue, oldValue) => {
-  mappingProps.visible = newValue;
-});
-watch(props.visible, (newValue, oldValue) => {
-  mappingProps.visible = newValue;
-});
-defineExpose({
-  visible: mappingExpose.visible
-});
-const LocalVars = props.localVars;
+const visible = toRef(props, 'visible');
+const localVars = props.localVars;
 const fireUCEvent = defineEmits([ 'OnFireEvent' ]);
-const Widget = {
-  FireUCEvent: fireUCEvent
+const getTerminalCardProps = (pile) => ({
+  pileData: pile,
+  isShow: localVars.isMaskOpen,
+  isDetail: localVars.isDetail,
+  infoSet: localVars.infoSet
+});
+const getTerminalStateType = (pileState: number) => {
+  if ([ 8, 12 ].includes(pileState)) return 'faulty';
+  if (pileState === 1) return 'offGrid';
+  if (pileState === 3) return 'gunsInserted';
+  if (pileState === 6) return 'charging';
+  if (pileState === 4) return 'chargeFull';
+  if (pileState === 2) return 'free';
+  return 'other';
 };
 
-
-function getpageName(varName) {
-  return UCControl[ varName ] ? UCControl[ varName ] : UC_OtherTerminal;
-}
 function refreshPileList() {
-  Widget.FireUCEvent('OnFireEvent', 'refresh');
+  fireUCEvent('OnFireEvent', 'refresh');
 }
-function click(item) {
-  console.log(item);
-}
-onMounted(() => {
-});
-
 
 </script>
 <style scoped>
-.item {
-    margin-bottom: 20px;
+.fasr-terminals {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 12px;
-    width: 25%;
+    padding: 12px;
+    padding-top: 0;
+    border-radius: 12px;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    outline: 0 !important;
 }
 
-.item img {
-    width: 40px;
-    height: 40px;
+.fasr-terminals__item {
+    outline: 0 !important;
 }
 </style>

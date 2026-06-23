@@ -1,3 +1,3 @@
-import PageBuilder from './ucBuilder.mjs';
+import PageBuilder from "./ucBuilder.mjs";
 
 (new PageBuilder()).startToBuild();

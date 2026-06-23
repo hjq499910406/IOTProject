@@ -7,7 +7,7 @@ import App from './<%= pageName%>.vue'
 // import router from './router'
 import { createI18n } from 'vue-i18n'
 
-let teldLocale = TFF.common.storage.Cookie.read('teld_locale')
+let teldLocale = TFF.common.storage.Cookie.read('teld_locale') || TFF.common.storage.Cookie.read('t_locale')
 if(!teldLocale){
   teldLocale = TFF.common.storage.Cookie.read('wrp_locale')
 }

@@ -1,3 +1,3 @@
-import PageBuilder from './portalBuilder.mjs';
+import PageBuilder from "./portalBuilder.mjs";
 
 (new PageBuilder()).startToBuild();

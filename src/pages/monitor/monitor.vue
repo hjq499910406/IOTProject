@@ -391,7 +391,7 @@
                 <TerminalPanel ref="terminalPanelRef"
                                :StaId="stationID"
                                :StationName="stationName"
-                               :onRefreshCount="updateTerminalTab"></TerminalPanel>
+                               :onRefreshCount="updateTerminalTab" />
             </t-tab-panel>
             <!-- 摄像头 -->
             <t-tab-panel v-if="!IsDispatchMonitor"

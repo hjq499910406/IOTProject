@@ -19,9 +19,8 @@ function extractObjectFromString(text) {
   
   // 如果匹配成功，返回匹配的内容
   if (match) {
-    return match[ 0 ];
-  }
-  else {
+    return match[0];
+  } else {
     throw new Error('No matching object found.');
   }
 }
@@ -35,32 +34,32 @@ function getEntryFiles(entryFile, pageName) {
   // const entryFiles = {};
   // const dirs = fs.readdirSync(entryFile);
   //if (!fs.existsSync(entryFile)) {
-  // 如果入口文件不存在，你可以在这里创建它或者抛出一个错误
-  console.warn(`入口文件不存在: ${ entryFile }，正在创建一个空文件作为占位符`);
+    // 如果入口文件不存在，你可以在这里创建它或者抛出一个错误
+    console.warn(`入口文件不存在: ${ entryFile }，正在创建一个空文件作为占位符`);
     
-  const dependenciesFile = entryFile.replace('autoGenEntry','dependencies');
+    const dependenciesFile = entryFile.replace('autoGenEntry','dependencies')
     
-  let dependenciesContent = '';
-  if(fs.existsSync(dependenciesFile)){
-    try {
-      const dependenciesInfo = fs.readFileSync(dependenciesFile,'utf8');
-      dependenciesContent = extractObjectFromString(dependenciesInfo);
+    let dependenciesContent = ''
+    if(fs.existsSync(dependenciesFile)){
+      try {
+        const dependenciesInfo = fs.readFileSync(dependenciesFile,'utf8')
+        dependenciesContent = extractObjectFromString(dependenciesInfo)
+      }
+      catch (e) {
+      }
     }
-    catch (e) {
-    }
-  }
 
-  const template = `
+    const template = `
         import ${ pageName } from './${ pageName }.vue';
         export { default as ${ pageName } } from './${ pageName }.vue';
-        export const dependencies = ${ dependenciesContent }
+        export const dependencies = ${dependenciesContent}
         export default Object.assign(${ pageName }, {
           install: (app, options) => {
             app.component('${ pageName }', ${ pageName });
           },
         });
     `;
-  fs.writeFileSync(entryFile, template);
+    fs.writeFileSync(entryFile, template);
   //}
 
   // for (const dir of dirs) {
@@ -165,7 +164,7 @@ export default class PageBuilder {
       plugins: [ vue() ],
       build: {
         emptyOutDir: false,
-        minify: 'terser',
+        minify: "terser",
         terserOptions: {
           compress: {
             drop_debugger: true
@@ -191,14 +190,14 @@ export default class PageBuilder {
           },
           external: id => {
             return (
-              id === 'vue'
-              || id === 'vue-router'
-              || id === 'vue-i18n'
-              || id === 'lodash'
-              || id === 'moment'
-              || id === 'dayjs'
-              || id === '@teld/t-components'
-              || /^echarts/.test(id)
+              id === 'vue' ||
+              id === 'vue-router' ||
+              id === 'vue-i18n' ||
+              id === 'lodash' ||
+              id === 'moment' ||
+              id === 'dayjs' ||
+              id === '@teld/t-components' ||
+              /^echarts/.test(id)
             );
           },
         }

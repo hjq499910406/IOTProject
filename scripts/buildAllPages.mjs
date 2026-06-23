@@ -1,3 +1,3 @@
-import PageBuilder from './pageBuilder.mjs';
+import PageBuilder from "./pageBuilder.mjs";
 
 (new PageBuilder()).startToBuild();
