@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html style="overflow-x:hidden;">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    <link rel="dns-prefetch" href="//sgi.teld3.xyz">
+    <meta name="renderer" content="webkit">
+    <meta name="description">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="no">
+    <link rel="shortcut icon" href="//resource.teld.cn/platform/teld/img/teld.ico">
+
+    <link href="http://resource.teld9.xyz/tff/component/pc/umd/style.css" rel="stylesheet" />
+    <link href="http://resource.teld9.xyz/tff/component/mobile/umd/style.css" rel="stylesheet" />
+
+    <link href="http://resource.teld9.xyz/tff/css/mobile/GCMobileComponent.css" rel="stylesheet" />
+    <link href="http://resource.teld9.xyz/tff/css/mobile/GCDefaultMobileTheme.css" rel="stylesheet" />
+    <link href="http://resource.teld9.xyz/tff/css/pc/GCPCComponent.css" rel="stylesheet" />
+    <link href="http://resource.teld9.xyz/tff/css/pc/GCDefaultPCTheme.css" rel="stylesheet" />
+    <link href="http://resource.teld8.top/tff/css/common/fas-icons.css" rel="stylesheet" />
+    <!-- <link href="http://resource.teld9.xyz/tff/component/pc/umd/style.css" rel="stylesheet" /> -->
+    <link href="http://resource.teld9.xyz/tff/css/common/TResponseComponent.css" rel="stylesheet" />
+    <script>
+      const __AddStyle = (url, callback, id) => {
+        var jsapi = window.document.createElement("link");
+        jsapi.rel = "stylesheet";
+        jsapi.href = url;
+        if (id)
+          jsapi.id = id;
+        jsapi.onload = function() {
+          if (callback)
+            callback();
+        };
+        window.document.head.appendChild(jsapi);
+      };
+      window.addTheme = function(themeName){
+        const themeID = `_tff_theme_${themeName}_`
+        const mStyle = document.getElementById(themeID);
+        if(mStyle){
+          return
+        }
+
+        const url = `http://resource.teld9.xyz/telddoc/141/${themeName}.css`;
+        __AddStyle(url,null,themeID)
+      }
+      window.removeTheme = function(themeName){
+        const themeID = `_tff_theme_${themeName}_`
+        const mStyle = document.getElementById(themeID);
+        if(mStyle){
+          document.head.removeChild(mStyle);
+        }
+      }
+
+      window.addPCStyle = function(){
+        document.documentElement.classList.remove("tm");
+        if(!document.documentElement.classList.contains("q")){
+          document.documentElement.classList.add("q");
+        }
+      }
+      window.addMobileStyle = function(){
+        document.documentElement.classList.remove("q");
+        if(!document.documentElement.classList.contains("tm")){
+          document.documentElement.classList.add("tm");
+        }
+      }
+    </script>
+    <%- headerScript %>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <%- bodyScript %>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
