@@ -1,44 +1,42 @@
 <template>
     <div v-show="visible" class="uc-terminal-card" :class="terminalCardClass">
-        <fasr_faultyPile_code v-if="stateType === 'faulty'" class="uc-terminal-card__pile fasr_faultyPile" :tabIndex="1"
+        <!-- 故障 -->
+        <TerminalFaultyPile v-if="stateType === 'faulty'" class="uc-terminal-card__pile fasr_faultyPile"
             :localVars="localVars" />
-        <fasr_offGridPile_code v-else-if="stateType === 'offGrid'" class="uc-terminal-card__pile fasr_offGridPile"
-            :tabIndex="1" :localVars="localVars" />
+        <!-- 已插入枪 -->
         <template v-else-if="stateType === 'gunsInserted'">
-            <fasr_gunsInsertedPile_code class="uc-terminal-card__pile fasr_gunsInsertedPile" :tabIndex="1"
-                :localVars="localVars" @OnFireEvent="handleGunsInsertedFireEvent" />
+            <TerminalGunsInsertedPile class="uc-terminal-card__pile fasr_gunsInsertedPile" :localVars="localVars"
+                @OnFireEvent="handleGunsInsertedFireEvent" />
             <span class="uc-terminal-card__float-link" @click="handleMsgClick">报文</span>
         </template>
-        <fasr_chargingPile_code v-else-if="stateType === 'charging'" class="uc-terminal-card__pile fasr_chargingPile"
-            :tabIndex="1" :localVars="localVars" @OnFireEvent="handleChargingFireEvent" />
-        <fasr_chargeFullPile_code v-else-if="stateType === 'chargeFull'"
-            class="uc-terminal-card__pile fasr_chargeFullPile" :tabIndex="1" :localVars="localVars" />
-        <fasr_freePile_code v-else-if="stateType === 'free'" class="uc-terminal-card__pile fasr_freePile"
-            :tabIndex="1" :localVars="localVars" variant="free" />
-        <fasr_freePile_code v-else class="uc-terminal-card__pile fasr_otherPile" :tabIndex="1"
-            :localVars="localVars" variant="other" />
+        <!-- 充电中 -->
+        <TerminalChargingPile v-else-if="stateType === 'charging'" class="uc-terminal-card__pile fasr_chargingPile"
+            :localVars="localVars" @OnFireEvent="handleChargingFireEvent" />
+        <!-- 已充满 -->
+        <TerminalChargeFullPile v-else-if="stateType === 'chargeFull'"
+            class="uc-terminal-card__pile fasr_chargeFullPile" :localVars="localVars" />
+        <!-- 空闲 -->
+        <TerminalFreePile v-else-if="stateType === 'free'" class="uc-terminal-card__pile fasr_freePile"
+            :localVars="localVars" variant="free" />
+        <!-- 离网 -->
+        <TerminalOffGridPile v-else-if="stateType === 'offGrid'" class="uc-terminal-card__pile fasr_offGridPile"
+            :localVars="localVars" />
+        <!-- 其他 -->
+        <TerminalFreePile v-else class="uc-terminal-card__pile fasr_otherPile" :localVars="localVars"
+            variant="other" />
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { computed, onMounted, reactive, watch } from 'vue';
-import fasr_faultyPile_code from '../component/fasr_faultyPile.vue';
-import fasr_offGridPile_code from '../component/fasr_offGridPile.vue';
-import fasr_gunsInsertedPile_code from '../component/fasr_gunsInsertedPile.vue';
-import fasr_chargingPile_code from '../component/fasr_chargingPile.vue';
-import fasr_chargeFullPile_code from '../component/fasr_chargeFullPile.vue';
-import fasr_freePile_code from '../component/fasr_freePile.vue';
+import TerminalFaultyPile from './piles/TerminalFaultyPile.vue';
+import TerminalOffGridPile from './piles/TerminalOffGridPile.vue';
+import TerminalGunsInsertedPile from './piles/TerminalGunsInsertedPile.vue';
+import TerminalChargingPile from './piles/TerminalChargingPile.vue';
+import TerminalChargeFullPile from './piles/TerminalChargeFullPile.vue';
+import TerminalFreePile from './piles/TerminalFreePile.vue';
 
 const Funcs = window.Funcs;
-
-type TerminalStateType =
-    | 'faulty'
-    | 'offGrid'
-    | 'gunsInserted'
-    | 'charging'
-    | 'chargeFull'
-    | 'free'
-    | 'other';
 
 const createDefaultPile = () => ({
     PileID: '',
@@ -90,23 +88,21 @@ const createDefaultPile = () => ({
     LastChargeTime: null
 });
 
-const createDefaultInfoSet = () => ({
-    one: false,
-    two: false,
-    three: false,
-    oneOld: false,
-    twoOld: false,
-    threeOld: false
-});
-
 const props = defineProps({
     stateType: {
-        type: String as () => TerminalStateType,
+        type: String,
         required: true
     },
     infoSet: {
         type: Object,
-        default: () => createDefaultInfoSet()
+        default: () => ({
+            one: false,
+            two: false,
+            three: false,
+            oneOld: false,
+            twoOld: false,
+            threeOld: false
+        })
     },
     isDetail: {
         type: Boolean,
@@ -118,7 +114,55 @@ const props = defineProps({
     },
     pileData: {
         type: Object,
-        default: () => createDefaultPile()
+        default: () => ({
+            PileID: '',
+            PileCode: '',
+            PileName: '',
+            StaID: '',
+            StaName: '',
+            BillCode: '',
+            PileRealTimeState: '',
+            PileSOC: null,
+            PileFullOfTime: '',
+            LastRemindTime: '',
+            IfFastCharging: '',
+            ChargingMoney: null,
+            ChargingPower: null,
+            ChargingBeginTime: '',
+            ChargingEndTime: '',
+            OccupyTime: '',
+            CustomerID: '',
+            CustomerType: '',
+            CustomerTypeDetail: '',
+            CustomerName: '',
+            CustomerClassification: '',
+            CustomerPhone: '',
+            CustomerLabel: '',
+            PileUsageTime: null,
+            DataCenter: '',
+            EstimatedFillingTime: '',
+            ChargingTime: '',
+            GunInsertionTime: '',
+            ChargingStopReason: '',
+            OffTime: '',
+            OffLength: '',
+            OffRate: '',
+            FaultRate: '',
+            ChargingBeginTimeDt: null,
+            GunInsertionTimeDt: null,
+            OffTimeDt: null,
+            FaultRateDc: null,
+            ChargingEndTimeDt: null,
+            OccupyStartTime: '',
+            OrderByNum: null,
+            IsNoGunOccupancy: null,
+            CarNumber: '',
+            FaultRemoveAdvice: '',
+            IsCharged: null,
+            FaultTime: '',
+            FaultReason: '',
+            LastChargeTime: null
+        })
     },
     visible: {
         type: Boolean,
@@ -142,30 +186,30 @@ const terminalCardClass = computed(() => ({
     'uc-terminal-card--guns-inserted': props.stateType === 'gunsInserted'
 }));
 
-const getChargingName = (pileData: any) => {
+const getChargingName = (pileData) => {
     if (pileData.IsSuperCharging == '1') return '超充';
     return pileData.IfFastCharging == '1' ? '快充' : '慢充';
 };
 
-const getFastChargingName = (pileData: any) => {
+const getFastChargingName = (pileData) => {
     return pileData.IfFastCharging == '1' ? '快充' : '慢充';
 };
 
-const getCustomerTypeLabel = (customerType: any) => {
+const getCustomerTypeLabel = (customerType) => {
     if (customerType == '1') return '个人客户';
     if (customerType == 2) return '企业客户';
     return customerType;
 };
 
-const appendUnit = (value: any, unit: string, fallback = '--') => {
+const appendUnit = (value, unit, fallback = '--') => {
     return [undefined, null, ''].includes(value) ? fallback : `${value}${unit}`;
 };
 
-const appendMoneyUnit = (value: any, fallback = '--') => {
+const appendMoneyUnit = (value, fallback = '--') => {
     return [undefined, null, ''].includes(value) ? fallback : `¥${value}`;
 };
 
-const assignBasePileFields = (pileData: any) => {
+const assignBasePileFields = (pileData) => {
     Object.assign(localVars.pile, createDefaultPile(), {
         StaID: pileData.StaID,
         StaName: pileData.StaName,
@@ -179,7 +223,7 @@ const assignBasePileFields = (pileData: any) => {
     });
 };
 
-const applyFaultyPile = (pileData: any) => {
+const applyFaultyPile = (pileData) => {
     assignBasePileFields(pileData);
     Object.assign(localVars.pile, {
         ChargingName: getFastChargingName(pileData),
@@ -189,7 +233,7 @@ const applyFaultyPile = (pileData: any) => {
     });
 };
 
-const applyOffGridPile = (pileData: any) => {
+const applyOffGridPile = (pileData) => {
     assignBasePileFields(pileData);
     Object.assign(localVars.pile, {
         ChargingName: getFastChargingName(pileData),
@@ -200,7 +244,7 @@ const applyOffGridPile = (pileData: any) => {
     });
 };
 
-const applyChargeVehicleFields = (pileData: any) => {
+const applyChargeVehicleFields = (pileData) => {
     Object.assign(localVars.pile, {
         CarSeriesName: pileData.CarSeriesName || '--',
         CarNumber: pileData.CarNumber || '--',
@@ -229,7 +273,7 @@ const applyChargeVehicleFields = (pileData: any) => {
     });
 };
 
-const applyGunsInsertedPile = (pileData: any) => {
+const applyGunsInsertedPile = (pileData) => {
     assignBasePileFields(pileData);
     Object.assign(localVars.pile, {
         IsSetPileLimitSOC: pileData.IsSetPileLimitSOC,
@@ -250,7 +294,7 @@ const applyGunsInsertedPile = (pileData: any) => {
     applyChargeVehicleFields(pileData);
 };
 
-const applyChargingPile = (pileData: any) => {
+const applyChargingPile = (pileData) => {
     assignBasePileFields(pileData);
     Object.assign(localVars.pile, {
         ChargingName: getChargingName(pileData),
@@ -266,7 +310,7 @@ const applyChargingPile = (pileData: any) => {
     applyChargeVehicleFields(pileData);
 };
 
-const applyChargeFullPile = (pileData: any) => {
+const applyChargeFullPile = (pileData) => {
     assignBasePileFields(pileData);
     Object.assign(localVars.pile, {
         ChargingName: getChargingName(pileData),
@@ -284,7 +328,7 @@ const applyChargeFullPile = (pileData: any) => {
     applyChargeVehicleFields(pileData);
 };
 
-const applyFreePile = (pileData: any) => {
+const applyFreePile = (pileData) => {
     assignBasePileFields(pileData);
     Object.assign(localVars.pile, {
         ChargingName: getFastChargingName(pileData),
@@ -292,7 +336,7 @@ const applyFreePile = (pileData: any) => {
     });
 };
 
-const applyOtherPile = (pileData: any) => {
+const applyOtherPile = (pileData) => {
     assignBasePileFields(pileData);
     Object.assign(localVars.pile, {
         ChargingName: getFastChargingName(pileData),
@@ -300,7 +344,7 @@ const applyOtherPile = (pileData: any) => {
     });
 };
 
-const pileStateMappers: Record<TerminalStateType, (pileData: any) => void> = {
+const pileStateMappers = {
     faulty: applyFaultyPile,
     offGrid: applyOffGridPile,
     gunsInserted: applyGunsInsertedPile,
@@ -321,7 +365,7 @@ const refreshPile = () => {
 };
 
 const handleMsgClick = () => {
-    const pileData: any = props.pileData || {};
+    const pileData = props.pileData || {};
     const param = {
         StaID: pileData.StaID || '',
         StaName: pileData.StaName || '',
@@ -342,11 +386,11 @@ const handleMsgClick = () => {
     });
 };
 
-const handleGunsInsertedFireEvent = (eventData: any) => {
+const handleGunsInsertedFireEvent = (eventData) => {
     emit('openCharge', eventData);
 };
 
-const handleChargingFireEvent = (eventData: any) => {
+const handleChargingFireEvent = (eventData) => {
     emit('closeCharge', eventData);
 };
 

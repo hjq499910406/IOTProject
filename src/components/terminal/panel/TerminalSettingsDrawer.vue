@@ -1,7 +1,7 @@
 <template>
-    <t-dialog :ref='el => Widget["fasr_filedSet"] = el' style='opacity:100%' class='fasr_filedSet tr-drawer'
+    <t-dialog :ref='el => Widget.fieldSettingsDialog = el' style='opacity:100%' class='fasr_filedSet tr-drawer'
         instanceCode='fasr_filedSet' position='right' :tabIndex='1' :no-backdrop-dismiss='false'
-        @before-show='fasr_filedSet_onBeforeShow' :maximized='true'>
+        @before-show='handleBeforeShow' :maximized='true'>
         <div :ref='el => Widget["fasr_div_467b86"] = el'
             style='width:400px; height:100%;background:#FFFFFF;border-radius:0px' class='fasr_div_467b86'
             instanceCode='fasr_div_467b86'>
@@ -15,7 +15,7 @@
                 </t-label>
                 <t-button :ref='el => Widget["fasr_button_c1342e"] = el' style='opacity:100%'
                     class='fasr_button_c1342e tr-button-icon-text2' icon='fas dx-icon icon-t-delete-01' :showHint='true'
-                    :tabIndex='1' instanceCode='fasr_button_c1342e' @click='fasr_button_c1342e_OnClick'>
+                    :tabIndex='1' instanceCode='fasr_button_c1342e' @click='closeDrawer'>
                 </t-button>
             </div>
             <div :ref='el => Widget["fasr_div_e52e6f"] = el' style='    background:#FFFFFF'
@@ -43,7 +43,7 @@
                                     instanceCode='fasr_toggle_782d90'
                                     :label="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_toggle_782d90.Label', '属性_1')"
                                     :hideLabel='true' helpPlacement='bottom' labelPosition='top' :tabIndex='1'
-                                    v-model='skillsmp.one'>
+                                    v-model='fieldSettings.one'>
                                 </t-toggle>
                             </div>
                             <t-label :ref='el => Widget["fasr_label_23b17a"] = el'
@@ -72,7 +72,7 @@
                                     instanceCode='fasr_toggle_639280_Copyd639280_Copy'
                                     :label="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_toggle_639280_Copyd639280_Copy.Label', '属性_2')"
                                     :hideLabel='true' helpPlacement='bottom' labelPosition='top' :tabIndex='1'
-                                    v-model='skillsmp.two'>
+                                    v-model='fieldSettings.two'>
                                 </t-toggle>
                             </div>
                             <t-label :ref='el => Widget["fasr_label_993591_Copyb993591_Copya"] = el'
@@ -102,7 +102,7 @@
                                     instanceCode='fasr_toggle_166575_Copyd166575_Copy'
                                     :label="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_toggle_166575_Copyd166575_Copy.Label', '属性_3')"
                                     :hideLabel='true' helpPlacement='bottom' labelPosition='top' :tabIndex='1'
-                                    v-model='skillsmp.three'>
+                                    v-model='fieldSettings.three'>
                                 </t-toggle>
                             </div>
                             <t-label :ref='el => Widget["fasr_label_914195_Copyb914195_Copya"] = el'
@@ -122,13 +122,13 @@
                             class='fasr_button_71fced tr-button-default'
                             :label="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_button_71fced.Label', '重置')"
                             instanceCode='fasr_button_71fced' :showHint='true' :tabIndex='1'
-                            @click='fasr_button_71fced_OnClick'>
+                            @click='resetFieldSettings'>
                         </t-button>
                         <t-button :ref='el => Widget["fasr_button_160069_Copyfced"] = el' style='opacity:100%'
                             class='fasr_button_160069_Copyfced tr-button-primary'
                             :label="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_button_160069_Copyfced.Label', '确定')"
                             instanceCode='fasr_button_160069_Copyfced' :showHint='true' :tabIndex='1'
-                            @click='fasr_button_160069_Copyfced_OnClick'>
+                            @click='confirmFieldSettings'>
                         </t-button>
                     </div>
                 </div>
@@ -137,18 +137,18 @@
     </t-dialog>
 </template>
 
-<script setup lang="ts">
-import { ref, onBeforeMount, onMounted, computed, onUnmounted, reactive, nextTick, watch, provide, toRef, toRefs } from 'vue';
+<script setup>
+import { ref } from 'vue';
 const Widget = {
-  fasr_filedSet: null,
+  fieldSettingsDialog: null,
 };
 window.Widget = Widget;
-async function fasr_filedSet_onBeforeShow(e) {
+function handleBeforeShow() {
   if (!window.isPC()) {
-    Widget.fasr_filedSet.position = 'bottom';
+    Widget.fieldSettingsDialog.position = 'bottom';
   }
 }
-const skillsmp = ref({
+const fieldSettings = ref({
   'one': false,
   'two': false,
   'three': false,
@@ -157,47 +157,47 @@ const skillsmp = ref({
   'twoOld': false,
   'threeOld': false,
 });
-async function fasr_button_c1342e_OnClick(e) {
-  skillsmp.value.one = skillsmp.value.oneOld;
-  skillsmp.value.two = skillsmp.value.twoOld;
-  skillsmp.value.three = skillsmp.value.threeOld;
+function closeDrawer() {
+  fieldSettings.value.one = fieldSettings.value.oneOld;
+  fieldSettings.value.two = fieldSettings.value.twoOld;
+  fieldSettings.value.three = fieldSettings.value.threeOld;
 
-  Widget.fasr_filedSet.closeDialog();
+  Widget.fieldSettingsDialog.closeDialog();
 }
 
-async function fasr_button_71fced_OnClick(e) {
-  skillsmp.value.one = skillsmp.value.oneOld;
-  skillsmp.value.two = skillsmp.value.twoOld;
-  skillsmp.value.three = skillsmp.value.threeOld;
+function resetFieldSettings() {
+  fieldSettings.value.one = fieldSettings.value.oneOld;
+  fieldSettings.value.two = fieldSettings.value.twoOld;
+  fieldSettings.value.three = fieldSettings.value.threeOld;
 }
 
 const emit = defineEmits([ 'updateskillsmp' ]);
-async function fasr_button_160069_Copyfced_OnClick(e) {
-  skillsmp.value.oneOld = skillsmp.value.one;
-  skillsmp.value.twoOld = skillsmp.value.two;
-  skillsmp.value.threeOld = skillsmp.value.three;
+function confirmFieldSettings() {
+  fieldSettings.value.oneOld = fieldSettings.value.one;
+  fieldSettings.value.twoOld = fieldSettings.value.two;
+  fieldSettings.value.threeOld = fieldSettings.value.three;
   Funcs.SetUserProfile({ Key: 'Saas_Sta', DynamicKey: 'PileFieldSet' }, JSON.stringify({
-    one: skillsmp.value.one,
-    two: skillsmp.value.two,
-    three: skillsmp.value.three,
-    isDetail: skillsmp.value.isDetail
+    one: fieldSettings.value.one,
+    two: fieldSettings.value.two,
+    three: fieldSettings.value.three,
+    isDetail: fieldSettings.value.isDetail
   }));
 
-  Widget.fasr_filedSet.closeDialog();
-  emit('updateskillsmp', skillsmp.value);
+  Widget.fieldSettingsDialog.closeDialog();
+  emit('updateskillsmp', fieldSettings.value);
 }
 
 const openDrawer = (value) => {
   if (value) {
-    skillsmp.value.one = value.one;
-    skillsmp.value.two = value.two;
-    skillsmp.value.three = value.three;
-    skillsmp.value.isDetail = !!value.isDetail;
-    skillsmp.value.oneOld = value.oneOld;
-    skillsmp.value.twoOld = value.twoOld;
-    skillsmp.value.threeOld = value.threeOld;
+    fieldSettings.value.one = value.one;
+    fieldSettings.value.two = value.two;
+    fieldSettings.value.three = value.three;
+    fieldSettings.value.isDetail = !!value.isDetail;
+    fieldSettings.value.oneOld = value.oneOld;
+    fieldSettings.value.twoOld = value.twoOld;
+    fieldSettings.value.threeOld = value.threeOld;
   }
-  Widget.fasr_filedSet.showDialog();
+  Widget.fieldSettingsDialog.showDialog();
 };
 defineExpose({
   openDrawer

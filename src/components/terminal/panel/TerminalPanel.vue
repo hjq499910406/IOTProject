@@ -76,7 +76,7 @@
                     <div class="terminal-panel__action-bar">
                         <template v-if="ISPC">
                             <t-button v-show="isDetail" class="tr-button-default" label="字段设置" :showHint="true"
-                                :tabIndex="1" @click="fasr_div_filed_OnClick">
+                                :tabIndex="1" @click="openFieldSettings">
                             </t-button>
                             <div class="terminal-panel__detail-toggle-wrap">
                                 <span class="terminal-panel__detail-label">
@@ -87,7 +87,7 @@
                                 <t-toggle class="terminal-panel__toggle"
                                     :label="$t('Schema.Page.UCTerminalList.Controls.fasr_toggle_1a3051.Label', '详细信息')"
                                     helpPlacement='bottom' labelPosition='left' :tabIndex='1' :hideLabel='true'
-                                    @change='fasr_toggle_1a3051_OnChange' v-model='isDetail'>
+                                    @change='handleDetailToggleChange' v-model='isDetail'>
                                 </t-toggle>
                             </div>
                             <t-button class="tr-button-primary" label="一键开启充电" :showHint="true" :tabIndex="1"
@@ -123,11 +123,11 @@
                                     <t-toggle class="terminal-panel__toggle terminal-panel__toggle--mobile"
                                         :label="$t('Schema.Page.UCTerminalList.Controls.fasr_toggle_1a3051.Label', '详细信息')"
                                         helpPlacement='bottom' labelPosition='left' :tabIndex='1' :hideLabel='true'
-                                        @change='fasr_toggle_1a3051_OnChange' v-model='isDetail'>
+                                        @change='handleDetailToggleChange' v-model='isDetail'>
                                     </t-toggle>
                                 </span>
                                 <span v-if="isDetail" class="terminal-panel__mobile-menu-item"
-                                    @click="handleMobileFiledSetting">
+                                    @click="handleMobileFieldSetting">
                                     字段设置
                                 </span>
                             </div>
@@ -138,14 +138,14 @@
                     <div v-if="LoadingPiles" class="terminal-panel__loading">
                         <CommonLoading />
                     </div>
-                    <FasrTerminals class="terminal-panel__list" :tabIndex='1' :localVars='terminalListState'
-                        @OnFireEvent='fasr_terminals_OnFireEvent'>
-                    </FasrTerminals>
+                    <TerminalList class="terminal-panel__list" :tabIndex='1' :localVars='terminalListState'
+                        @OnFireEvent='handleTerminalListFireEvent'>
+                    </TerminalList>
                 </div>
             </div>
 
         </div>
-        <TerminalSettingsDrawr ref="terminalSettingsDrawrRef" @updateskillsmp="updateSkillsmp" />
+        <TerminalSettingsDrawer ref="terminalSettingsDrawerRef" @updateskillsmp="handleFieldSettingsUpdate" />
         <t-dialog v-model:show="IfShowTimingOneKeyCharge" :position="positionDialog">
             <div class="terminal-panel__dialog">
                 <div class="terminal-panel__dialog-title-row">
@@ -252,7 +252,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {
     ref,
     onMounted,
@@ -264,16 +264,14 @@ import {
     toRef,
     unref
 } from 'vue';
-import { DataQueryClass } from '../fas/models/DataQueryClass';
-import { DataQueryClassAsync } from '../fas/models/DataQueryClassAsync';
-import { ActionClass } from '../fas/models/ActionClass';
-import { ActionClassAsync } from '../fas/models/ActionClassAsync';
+import { ActionClass } from '../../../fas/models/ActionClass';
+import { ActionClassAsync } from '../../../fas/models/ActionClassAsync';
 const Funcs = window.Funcs;
-import '../fas/action/Action_GetStaPiles.ts';
-import '../fas/action/Action_GetStaAndPileCount.ts';
-import '../fas/action/Action_GetPowerCharingAbnormalData.ts';
-import TerminalSettingsDrawr from './TerminalSettingsDrawr.vue';
-import CommonLoading from './CommonLoading.vue';
+import '../../../fas/action/Action_GetStaPiles';
+import '../../../fas/action/Action_GetStaAndPileCount';
+import '../../../fas/action/Action_GetPowerCharingAbnormalData';
+import TerminalSettingsDrawer from './TerminalSettingsDrawer.vue';
+import CommonLoading from '../../CommonLoading.vue';
 import {
   createDefaultCtrlList,
   fetchCtrlListByStation,
@@ -300,7 +298,7 @@ if (window.innerWidth >= 768) {
 }
 const ISPC = computed(() => screenWidth.value > 767);
 const mobileActionMenuVisible = ref(false);
-const mobileActionMenuRef = ref<HTMLElement | null>(null);
+const mobileActionMenuRef = ref(null);
 const toggleMobileActionMenu = () => {
     mobileActionMenuVisible.value = !mobileActionMenuVisible.value;
 };
@@ -324,32 +322,30 @@ const handleMobileRefreshIconClick = () => {
         onCount: props.onRefreshCount
     });
 };
-const handleMobileFiledSetting = () => {
+const handleMobileFieldSetting = () => {
     closeMobileActionMenu();
-    fasr_div_filed_OnClick(null);
+    openFieldSettings();
 };
-const handleDocumentClick = (event: MouseEvent) => {
+const handleDocumentClick = (event) => {
     if (!mobileActionMenuVisible.value) return;
-    const target = event.target as Node | null;
+    const target = event.target;
     if (mobileActionMenuRef.value && target && !mobileActionMenuRef.value.contains(target)) {
         closeMobileActionMenu();
     }
 };
-import FasrTerminals from '../fas/component/fasr_terminals.vue';
+import TerminalList from '../list/TerminalList.vue';
 const fireUCEvent = defineEmits(['OnLoaded', 'FiledSetting']);
-const DataQuery = new DataQueryClass();
-DataQuery.Promise = new DataQueryClassAsync();
 const Action = new ActionClass();
 Action.Promise = new ActionClassAsync();
 window.addPCStyle();
 const IfShowTimingOneKeyCharge = ref(false);
-const TimingOneKeyCharge = ref<any[]>([]);
+const TimingOneKeyCharge = ref([]);
 const currentStation = reactive({
     ID: '',
     Name: ''
 });
 const timingOneKeyChargeForm = reactive({
-    ChargeTimeList: [] as { time: string }[],
+    ChargeTimeList: [],
     TimeType: 1,
     IsCompensate: 0,
     ChargeType: '1'
@@ -585,32 +581,104 @@ const primaryStateOptions = [
     { key: 'offGrid', label: '离网', countKey: 'OffLineStatePileCount' },
     { key: 'faulty', label: '故障', countKey: 'FaultStatePileCount' },
     { key: 'other', label: '其他', countKey: 'OtherStatePileCount' }
-] as const;
+];
 const abnormalStateOptions = [
     { key: 'high', label: '高异常', countKey: 'HighAbnormalCount' },
     { key: 'slow', label: '充电慢', countKey: 'ChargeSlowCount' }
-] as const;
-const PRIMARY_STATE_LABELS = ['空闲', '充电中', '已插枪', '已充满', '离网', '故障'];
+] ;
+const PILE_STATE = Object.freeze({
+    // 离线
+    Offline: 1,
+    // 空闲
+    Free: 2,
+    // 已插枪
+    PutGun: 3,
+    // 已充满
+    ChargingFull: 4,
+    // 暂停
+    Pause: 5,
+    // 充电中
+    Charging: 6,
+    // 涓流充
+    Purling: 7,
+    // 终端故障
+    PileFault: 8,
+    // 切换中
+    Changing: 9,
+    // 启动中
+    Statring: 10,
+    // 放电中
+    Discharging: 11,
+    // 充电机故障
+    ChargerFault: 12,
+    // BMS故障
+    BMSFault: 13,
+    // 连接故障
+    ConnectFault: 14,
+    // 负荷调度中
+    Dispatching: 15,
+    // 副枪
+    SecondGun: 16,
+    // 未知
+    Unknown: 17,
+    // 恢复中
+    Recover: 18,
+    // 限制中
+    Limiting: 19,
+    // 等待中
+    Waiting: 20,
+    // 排队中
+    Queuing: 21,
+    // 已充电
+    Charged: 22,
+    // 上线中
+    Onlining: 23
+});
+const PRIMARY_STATE_CODES = {
+    free: [PILE_STATE.Free],
+    charging: [PILE_STATE.Charging, PILE_STATE.Purling],
+    gunInserted: [PILE_STATE.PutGun],
+    chargeFull: [PILE_STATE.ChargingFull],
+    offGrid: [PILE_STATE.Offline],
+    faulty: [
+        PILE_STATE.PileFault,
+        PILE_STATE.ChargerFault,
+        PILE_STATE.BMSFault,
+        PILE_STATE.ConnectFault
+    ]
+};
+const PRIMARY_STATE_CODE_SET = new Set(Object.values(PRIMARY_STATE_CODES).flat());
+const getPileStateCode = (pile) => {
+    const stateCode = Number(pile?.PileState);
+    return Number.isNaN(stateCode) ? null : stateCode;
+};
+const hasPileStateCode = (pile, stateCodes = []) => {
+    const stateCode = getPileStateCode(pile);
+    return stateCode !== null && stateCodes.includes(stateCode);
+};
+const isFaultyPile = (pile) => hasPileStateCode(pile, PRIMARY_STATE_CODES.faulty);
+const isPrimaryStateOther = (pile) => {
+    const stateCode = getPileStateCode(pile);
+    return stateCode !== null && !PRIMARY_STATE_CODE_SET.has(stateCode);
+};
 const MAIN_STATE_FILTERS = {
-    free: (pile) => pile.PileRealTimeState == '空闲',
-    charging: (pile) => pile.PileRealTimeState == '充电中',
-    gunInserted: (pile) => pile.PileRealTimeState == '已插枪',
-    chargeFull: (pile) => pile.PileRealTimeState == '已充满',
-    offGrid: (pile) => pile.PileRealTimeState == '离网',
-    faulty: (pile) => pile.PileRealTimeState.includes('故障'),
-    other: (pile) =>
-        !PRIMARY_STATE_LABELS.includes(pile.PileRealTimeState)
-        && !String(pile.PileRealTimeState || '').includes('故障'),
+    free: (pile) => hasPileStateCode(pile, PRIMARY_STATE_CODES.free),
+    charging: (pile) => hasPileStateCode(pile, PRIMARY_STATE_CODES.charging),
+    gunInserted: (pile) => hasPileStateCode(pile, PRIMARY_STATE_CODES.gunInserted),
+    chargeFull: (pile) => hasPileStateCode(pile, PRIMARY_STATE_CODES.chargeFull),
+    offGrid: (pile) => hasPileStateCode(pile, PRIMARY_STATE_CODES.offGrid),
+    faulty: isFaultyPile,
+    other: isPrimaryStateOther,
     high: (pile) => pile.IsHighAbnormal,
     slow: (pile) => pile.IsChargeSlow
-} as const;
+};
 const SUB_STATE_FILTERS = {
     noCharge: (pile) => !pile.IsCharged,
     isCharge: (pile) => pile.IsCharged
-} as const;
-const isStateSelected = (state: string) => !!selectedStates[state];
-const getStateCount = (countKey: string) => pileStates[countKey] ?? 0;
-const handleStateClick = (state: string) => {
+};
+const isStateSelected = (state) => !!selectedStates[state];
+const getStateCount = (countKey) => pileStates[countKey] ?? 0;
+const handleStateClick = (state) => {
     panelController.selectState(state);
 };
 const filterBySelectedCtrl = (list) => {
@@ -635,19 +703,13 @@ const parseOccupyMinutes = (value) => {
 const updatePileStatesByList = (list) => {
     applyPileStateSummary({
         AllCount: list.length,
-        FreeStatePileCount: list.filter((pile) => pile.PileRealTimeState == '空闲').length,
-        ChargingStatePileCount: list.filter((pile) => pile.PileRealTimeState == '充电中').length,
-        ConnectedChargingCount: list.filter((pile) => pile.PileRealTimeState == '已插枪').length,
-        FullChargingCount: list.filter((pile) => pile.PileRealTimeState == '已充满').length,
-        OffLineStatePileCount: list.filter((pile) => pile.PileRealTimeState == '离网').length,
-        FaultStatePileCount: list.filter(
-            (pile) => pile.PileRealTimeState && pile.PileRealTimeState.includes('故障')
-        ).length,
-        OtherStatePileCount: list.filter(
-            (pile) =>
-                !['空闲', '充电中', '已插枪', '已充满', '离网', '故障'].includes(pile.PileRealTimeState)
-                && !String(pile.PileRealTimeState || '').includes('故障')
-        ).length,
+        FreeStatePileCount: list.filter(MAIN_STATE_FILTERS.free).length,
+        ChargingStatePileCount: list.filter(MAIN_STATE_FILTERS.charging).length,
+        ConnectedChargingCount: list.filter(MAIN_STATE_FILTERS.gunInserted).length,
+        FullChargingCount: list.filter(MAIN_STATE_FILTERS.chargeFull).length,
+        OffLineStatePileCount: list.filter(MAIN_STATE_FILTERS.offGrid).length,
+        FaultStatePileCount: list.filter(MAIN_STATE_FILTERS.faulty).length,
+        OtherStatePileCount: list.filter(MAIN_STATE_FILTERS.other).length,
         HighAbnormalCount: list.filter((pile) => pile.IsHighAbnormal).length,
         ChargeSlowCount: list.filter((pile) => pile.IsChargeSlow).length,
         Occupy30mCount: list.filter((pile) => parseOccupyMinutes(pile.OccupyTime) >= 30).length,
@@ -696,8 +758,8 @@ const selectedStates = reactive({
     unNotice: false,
     over: false
 });
-const cachedPiles = ref<any[]>([]);
-const terminalPiles = ref<any[]>([]);
+const cachedPiles = ref([]);
+const terminalPiles = ref([]);
 const terminalInfoSet = reactive({
     one: false,
     two: false,
@@ -708,7 +770,7 @@ const terminalInfoSet = reactive({
     threeOld: false
 });
 const terminalListState = reactive({
-    Piles: [] as any[],
+    Piles: [],
     isMaskOpen: false,
     isDetail: false,
     infoSet: terminalInfoSet
@@ -733,8 +795,8 @@ const stateKeys = [
     'isCharge',
     'unNotice',
     'over'
-] as const;
-const subStateKeys = ['noCharge', 'isCharge', 'unNotice', 'over'] as const;
+] ;
+const subStateKeys = ['noCharge', 'isCharge', 'unNotice', 'over'];
 const validStateKeys = new Set(stateKeys);
 const dedupePilesById = (list) => {
     const uniqueIds = new Set(list.map((item) => item.PileID));
@@ -839,7 +901,7 @@ const filterTerminalPiles = (basePiles = null, onCount) => {
     let newPiles = [];
 
     const hasMainStateSelected = stateKeys
-        .filter((state) => !subStateKeys.includes(state as typeof subStateKeys[number]))
+        .filter((state) => !subStateKeys.includes(state))
         .some((state) => selectedStates[state]);
 
     if (!hasMainStateSelected) {
@@ -848,7 +910,7 @@ const filterTerminalPiles = (basePiles = null, onCount) => {
     else {
         for (let i = 0; i < stateKeys.length; i++) {
             if (
-                !subStateKeys.includes(stateKeys[i] as typeof subStateKeys[number])
+                !subStateKeys.includes(stateKeys[i])
                 && selectedStates[stateKeys[i]]
             ) {
                 const filterFn = MAIN_STATE_FILTERS[stateKeys[i]];
@@ -866,7 +928,7 @@ const filterTerminalPiles = (basePiles = null, onCount) => {
 
     for (let i = 0; i < stateKeys.length; i++) {
         if (
-            subStateKeys.includes(stateKeys[i] as typeof subStateKeys[number])
+            subStateKeys.includes(stateKeys[i])
             && selectedStates[stateKeys[i]]
         ) {
             isFilter = true;
@@ -889,8 +951,6 @@ const filterTerminalPiles = (basePiles = null, onCount) => {
     }
 };
 
-const refreshStatePiles = () => { };
-
 const selectState = (state, { loading = false, onCount } = {}) => {
     LoadingPiles.value = loading;
     toggleSelectedState(state);
@@ -901,21 +961,20 @@ const selectState = (state, { loading = false, onCount } = {}) => {
 const panelController = {
     refresh: refreshTerminalList,
     filterPiles: filterTerminalPiles,
-    refreshStatePiles,
     selectState
 };
-async function Page_OnError(e) {
+function handlePageError(e) {
     Funcs.HandleError(e);
 }
-const updateSkillsmp = (e) => {
+const handleFieldSettingsUpdate = (e) => {
     Object.assign(terminalInfoSet, e);
 };
-const terminalSettingsDrawrRef = ref(null);
-async function fasr_div_filed_OnClick(e) {
-    terminalSettingsDrawrRef.value.openDrawer(terminalInfoSet);
+const terminalSettingsDrawerRef = ref(null);
+function openFieldSettings() {
+    terminalSettingsDrawerRef.value.openDrawer(terminalInfoSet);
 }
 
-async function fasr_toggle_1a3051_OnChange(e) {
+function handleDetailToggleChange() {
     terminalInfoSet.isDetail = !!isDetail.value;
     setPileFieldSetProfile(JSON.stringify({
         one: terminalInfoSet.one,
@@ -924,7 +983,7 @@ async function fasr_toggle_1a3051_OnChange(e) {
         isDetail: isDetail.value
     }));
 }
-async function fasr_terminals_OnFireEvent(e) {
+function handleTerminalListFireEvent() {
     panelController.refresh();
 }
 Object.assign(terminalInfoSet, props.infoSet || {});
@@ -938,7 +997,7 @@ watch(ISPC, (isPC) => {
 onMounted(async () => {
     fireUCEvent('OnLoaded');
     await nextTick();
-    TFF.core.monitor.error.onError(Page_OnError);
+    TFF.core.monitor.error.onError(handlePageError);
     window.addEventListener('resize', updateScreenWidth);
     document.addEventListener('click', handleDocumentClick);
 });
@@ -961,7 +1020,6 @@ getPileFieldSetProfile().then((config) => {
 });
 defineExpose({
     refresh: panelController['refresh'],
-    refreshStatePiles: panelController['refreshStatePiles'],
     selectState: panelController['selectState']
 });
 </script>

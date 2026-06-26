@@ -3,26 +3,19 @@
         <div class='tr-div-default pile piles fasr-terminals' :tabIndex='-1'>
             <div v-for='pile in localVars.Piles' :key="pile.PileID || pile.PileCode || pile.PileName"
                 class='tr-div-default pile fasr-terminals__item' :tabIndex='-1'>
-                <UCTerminalCard :stateType="getTerminalStateType(pile.PileState)" v-bind="getTerminalCardProps(pile)"
+                <TerminalCard :stateType="getTerminalStateType(pile.PileState)" v-bind="getTerminalCardProps(pile)"
                     @closeCharge="refreshPileList" @openCharge="refreshPileList" />
             </div>
         </div>
     </div>
 </template>
-<script setup lang="ts">
+<script setup>
 import { toRef } from 'vue';
-import UCTerminalCard from '../../fas/uicontrol/UC_TerminalCard.vue';
-
-type TerminalLocalVars = {
-  Piles: any[],
-  isMaskOpen: boolean,
-  isDetail: boolean,
-  infoSet: any
-};
+import TerminalCard from '../cards/TerminalCard.vue';
 
 const props = defineProps({
   localVars: {
-    type: Object as () => TerminalLocalVars,
+    type: Object,
     required: true
   },
   visible: {
@@ -39,7 +32,7 @@ const getTerminalCardProps = (pile) => ({
   isDetail: localVars.isDetail,
   infoSet: localVars.infoSet
 });
-const getTerminalStateType = (pileState: number) => {
+const getTerminalStateType = (pileState) => {
   if ([ 8, 12 ].includes(pileState)) return 'faulty';
   if (pileState === 1) return 'offGrid';
   if (pileState === 3) return 'gunsInserted';

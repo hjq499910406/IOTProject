@@ -781,7 +781,7 @@ import PhotoMonitorPanel from '../../components/PhotoMonitorPanel.vue';
 
 import PVMonitorPanel from '../../components/PVMonitorPanel.vue';
 import EnergyMonitorPanel from '../../components/EnergyMonitorPanel.vue';
-import TerminalPanel from '../../components/TerminalPanel.vue';
+import TerminalPanel from '../../components/terminal/panel/TerminalPanel.vue';
 let hasPVMProductResult = null;
 
 const IsPC = ref(window.innerWidth >= 768);
