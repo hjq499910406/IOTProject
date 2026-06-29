@@ -7,7 +7,7 @@
         <template v-else-if="stateType === 'gunsInserted'">
             <TerminalGunsInsertedPile class="uc-terminal-card__pile fasr_gunsInsertedPile" :localVars="localVars"
                 @OnFireEvent="handleGunsInsertedFireEvent" />
-            <span class="uc-terminal-card__float-link" @click="handleMsgClick">报文</span>
+            <span class="uc-terminal-card__float-link" @click="handleMsgClick">{{ tt('message.packet') }}</span>
         </template>
         <!-- 充电中 -->
         <TerminalChargingPile v-else-if="stateType === 'charging'" class="uc-terminal-card__pile fasr_chargingPile"
@@ -28,6 +28,10 @@
 </template>
 
 <script setup>
+
+import { pageText } from '../../../pages/i18n';
+const tt = pageText;
+
 import { computed, onMounted, reactive, watch } from 'vue';
 import TerminalFaultyPile from './piles/TerminalFaultyPile.vue';
 import TerminalOffGridPile from './piles/TerminalOffGridPile.vue';
@@ -36,7 +40,9 @@ import TerminalChargingPile from './piles/TerminalChargingPile.vue';
 import TerminalChargeFullPile from './piles/TerminalChargeFullPile.vue';
 import TerminalFreePile from './piles/TerminalFreePile.vue';
 
+
 const Funcs = window.Funcs;
+const VALUE_PLACEHOLDER = '--';
 
 const createDefaultPile = () => ({
     PileID: '',
@@ -187,17 +193,17 @@ const terminalCardClass = computed(() => ({
 }));
 
 const getChargingName = (pileData) => {
-    if (pileData.IsSuperCharging == '1') return '超充';
-    return pileData.IfFastCharging == '1' ? '快充' : '慢充';
+    if (pileData.IsSuperCharging == '1') return tt('terminal.superCharge');
+    return pileData.IfFastCharging == '1' ? tt('terminal.fastCharge') : tt('terminal.slowCharge');
 };
 
 const getFastChargingName = (pileData) => {
-    return pileData.IfFastCharging == '1' ? '快充' : '慢充';
+    return pileData.IfFastCharging == '1' ? tt('terminal.fastCharge') : tt('terminal.slowCharge');
 };
 
 const getCustomerTypeLabel = (customerType) => {
-    if (customerType == '1') return '个人客户';
-    if (customerType == 2) return '企业客户';
+    if (customerType == '1') return tt('terminal.customer.personal');
+    if (customerType == 2) return tt('terminal.customer.enterprise');
     return customerType;
 };
 
@@ -227,9 +233,9 @@ const applyFaultyPile = (pileData) => {
     assignBasePileFields(pileData);
     Object.assign(localVars.pile, {
         ChargingName: getFastChargingName(pileData),
-        FaultRate: pileData.FaultRate || '无',
-        FaultReason: pileData.FaultReason || '无',
-        FaultRemoveAdvice: pileData.FaultRemoveAdvice || '无'
+        FaultRate: pileData.FaultRate || VALUE_PLACEHOLDER,
+        FaultReason: pileData.FaultReason || VALUE_PLACEHOLDER,
+        FaultRemoveAdvice: pileData.FaultRemoveAdvice || VALUE_PLACEHOLDER
     });
 };
 
@@ -237,10 +243,10 @@ const applyOffGridPile = (pileData) => {
     assignBasePileFields(pileData);
     Object.assign(localVars.pile, {
         ChargingName: getFastChargingName(pileData),
-        OffRate: pileData.OffRate || '无',
+        OffRate: pileData.OffRate || VALUE_PLACEHOLDER,
         FaultReason: pileData.OffTime,
-        OffLength: pileData.OffLength || '无',
-        OffTime: pileData.OffTime || '无'
+        OffLength: pileData.OffLength || VALUE_PLACEHOLDER,
+        OffTime: pileData.OffTime || VALUE_PLACEHOLDER
     });
 };
 
@@ -304,7 +310,7 @@ const applyChargingPile = (pileData) => {
         CustomerType: getCustomerTypeLabel(pileData.CustomerType),
         ChargingPower: appendUnit(pileData.ChargingPower, 'kWh'),
         ChargingMoney: appendMoneyUnit(pileData.ChargingMoney),
-        ChargingBeginTime: pileData.ChargingBeginTime || '无',
+        ChargingBeginTime: pileData.ChargingBeginTime || VALUE_PLACEHOLDER,
         PileSOC: pileData.PileSOC ? `${pileData.PileSOC}%` : '0%'
     });
     applyChargeVehicleFields(pileData);
@@ -318,10 +324,10 @@ const applyChargeFullPile = (pileData) => {
         CustomerPhone: pileData.CustomerName || '--',
         CustomerClassification: pileData.CustomerClassification,
         CustomerType: getCustomerTypeLabel(pileData.CustomerType),
-        PileFullOfTime: `充满时间 ${pileData.PileFullOfTime}`,
+        PileFullOfTime: `${tt('terminal.detail.estimatedFullTime')} ${pileData.PileFullOfTime || VALUE_PLACEHOLDER}`,
         ChargingPower: appendUnit(pileData.ChargingPower, 'kWh'),
         ChargingMoney: appendMoneyUnit(pileData.ChargingMoney),
-        ChargingBeginTime: pileData.ChargingBeginTime || '无',
+        ChargingBeginTime: pileData.ChargingBeginTime || VALUE_PLACEHOLDER,
         PileSOC: pileData.PileSOC ? `${pileData.PileSOC * 100}%` : '--',
         ChargingTime: pileData.ChargingTime || '--'
     });

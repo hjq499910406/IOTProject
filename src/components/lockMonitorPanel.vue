@@ -9,7 +9,7 @@
         valueType='static'
         :showHint='true'
         :tabIndex='1'
-        constValue='设备列表'
+        :constValue="tt('device.list', '设备列表')"
     >
     </t-label>
     <div
@@ -27,9 +27,9 @@
                         <span
                             @click.stop="openDetail(item)"
                             class="detail-icon"
-                            title="查看详情"
+                            :title="tt('common.viewDetails', '查看详情')"
                             >
-                            详情
+                            {{ tt('common.details', '详情') }}
                             <t-icon
                                 style='opacity:100%'
                                 class='lockIcon tr-icon-default'
@@ -51,7 +51,7 @@
                                 <span v-if="item.WarningState == 1" style="color: #ffa233;">{{ WarningCode[item.WarningCode] }}</span>
                                 <lock-Img :ParkingState="item.ParkingState" :LockState="item.LockState"></lock-Img>
                             </div>
-                            <div class="deviceCardTimeStamp">更新时间: {{item.LastUpdateDateTime || '--'}}</div>
+                            <div class="deviceCardTimeStamp">{{ tt('runtime.updateTime', '更新时间') }}: {{item.LastUpdateDateTime || '--'}}</div>
                             
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                             :ref='el=>Widget["fasr_button_upLock"]=el'
                             style='flex: 3;'
                             class='fasr_button_upLock tr-button-default'
-                            label='升锁'
+                            :label="tt('lock.raise', '升锁')"
                             instanceCode='fasr_button_upLock'
                             icon='fas dx-icon icon-t-arrow-up-outlined'
                             :showHint='true'
@@ -74,7 +74,7 @@
                             :ref='el=>Widget["fasr_button_downLock"]=el'
                             style='flex:3;'
                             class='fasr_button_viceColor tr-button-default'
-                            label='降锁'
+                            :label="tt('lock.lower', '降锁')"
                             instanceCode='fasr_button_downLock'
                             icon='fas dx-icon icon-t-arrow-down-outlined'
                             :showHint='true'
@@ -89,48 +89,7 @@
                             style=''
                             class='btnGroup_lock'
                             instanceCode='btnGroup_lock'
-                            :staticItems='[
-                                {
-                                    "label": "重启",
-                                    "value": "1",
-                                    "icon": "fas dx-icon icon-t-redo",
-                                    "type": "default",
-                                    "hint": "重启",
-                                    "visible": true,
-                                    "disabled": item.NetState == 1,
-                                    "code": "btnredo",
-                                },
-                                {
-                                    "label": "休眠",
-                                    "value": "2",
-                                    "icon": "fas dx-icon icon-t-unlink",
-                                    "type": "default",
-                                    "hint": "休眠",
-                                    "visible": item.DormancyState != 1,
-                                    "disabled": item.DormancyState != 2 || item.NetState != 1,
-                                    "code": "btnsleep",
-                                },
-                                {
-                                    "label": "唤醒",
-                                    "value": "3",
-                                    "icon": "fas dx-icon icon-t-link",
-                                    "type": "default",
-                                    "hint": "唤醒",
-                                    "visible": item.DormancyState == 1,
-                                    "disabled": item.NetState != 1,
-                                    "code": "btnwake",
-                                },
-                                {
-                                    "label": "设备日志",
-                                    "value": "4",
-                                    "icon": "fas dx-icon icon-t-file-text",
-                                    "type": "default",
-                                    "hint": "设备日志",
-                                    "visible": true,
-                                    "disabled": false,
-                                    "code": "btntext",
-                                }
-                            ]'
+                            :staticItems='getLockActionItems(item)'
                             btnSpace='8px'
                             :moreConf='true'
                             :moreMaxCount='0'
@@ -149,7 +108,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="lockList.length == 0" style="text-align: center;margin: 20px 0px;width: 100%;">无记录</div>
+        <div v-if="lockList.length == 0" style="text-align: center;margin: 20px 0px;width: 100%;">{{ tt('common.noRecords', '无记录') }}</div>
     </div>
     <div v-if="lockDataVisible" class="detail-modal">
         <!-- 背景遮罩 -->
@@ -157,7 +116,7 @@
         <!-- 详情面板 -->
         <div class="detail-panel">
             <div class="detail-header">
-                <h3 class="detail-title">设备详情</h3>
+                <h3 class="detail-title">{{ tt('device.detail', '设备详情') }}</h3>
                 <button class="close-btn" @click="closeDetail">×</button>
             </div>
             <div class="detail-body">
@@ -169,86 +128,86 @@
                     <span class="statetext" :class="{ online: isOnline, offline: isOffline, unknown: !isOnline && !isOffline }">
                         {{ NetState[currentDetail.NetState] }}
                     </span>
-                    <span class="device-name">{{ currentDetail.DeviceName || '未知设备' }}</span>
+                    <span class="device-name">{{ currentDetail.DeviceName || tt('runtime.unknownDevice', '未知设备') }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '设备编号' }}：</strong>
+                    <strong>{{ tt('runtime.deviceCode', '设备编号') }}：</strong>
                     <span :title="currentDetail.DeviceKey">{{ currentDetail.DeviceKey }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '车位号' }}：</strong>
+                    <strong>{{ tt('runtime.parkingNumber', '车位号') }}：</strong>
                     <span :title="currentDetail.ParkingNum">{{ currentDetail.ParkingNum || '--'}}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '地锁状态' }}：</strong>
-                    <span :title="currentDetail.LockState == 1 ? '升锁' : currentDetail.LockState == 2 ? '降锁' : '未知'">{{ currentDetail.LockState == 1 ? '升锁' : currentDetail.LockState == 2 ? '降锁' : '未知' }}</span>
+                    <strong>{{ tt('lock.status', '地锁状态') }}：</strong>
+                    <span :title="getLockStateLabel(currentDetail.LockState)">{{ getLockStateLabel(currentDetail.LockState) }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '休眠状态' }}：</strong>
-                    <span :title="currentDetail.DormancyState == 1 ? '休眠' : currentDetail.DormancyState == 2 ? '未休眠' : '未知'">{{ currentDetail.DormancyState == 1 ? '休眠' : currentDetail.DormancyState == 2 ? '未休眠' : '未知' }}</span>
+                    <strong>{{ tt('runtime.dormancyStatus', '休眠状态') }}：</strong>
+                    <span :title="getDormancyLabel(currentDetail.DormancyState)">{{ getDormancyLabel(currentDetail.DormancyState) }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '车位状态' }}：</strong>
-                    <span :title="currentDetail.ParkingState == 1 ? '有车' : currentDetail.ParkingState == 2 ? '无车' : '未知'">{{ currentDetail.ParkingState == 1 ? '有车' : currentDetail.ParkingState == 2 ? '无车' : '未知' }}</span>
+                    <strong>{{ tt('runtime.parkingStatus', '车位状态') }}：</strong>
+                    <span :title="getParkingStateLabel(currentDetail.ParkingState)">{{ getParkingStateLabel(currentDetail.ParkingState) }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '故障状态' }}：</strong>
-                    <span :title="currentDetail.FaultState == 1 ? '有故障' : currentDetail.FaultState == 2 ? '无故障' : '未知'">{{ currentDetail.FaultState == 1 ? '有故障' : currentDetail.FaultState == 2 ? '无故障' : '未知' }}</span>
+                    <strong>{{ tt('runtime.faultStatus', '故障状态') }}：</strong>
+                    <span :title="getFaultStateLabel(currentDetail.FaultState)">{{ getFaultStateLabel(currentDetail.FaultState) }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '故障描述' }}：</strong>
+                    <strong>{{ tt('runtime.faultDescription', '故障描述') }}：</strong>
                     <span :title="FaultCode[currentDetail.FaultCode]">{{ FaultCode[currentDetail.FaultCode] || '--' }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '预警状态' }}：</strong>
-                    <span :title="currentDetail.WarningState == 1 ? '有预警' : currentDetail.WarningState == 2 ? '无预警' : '未知'">{{ currentDetail.WarningState == 1 ? '有预警' : currentDetail.WarningState == 2 ? '无预警' : '未知' }}</span>
+                    <strong>{{ tt('runtime.warningStatus', '预警状态') }}：</strong>
+                    <span :title="getWarningStateLabel(currentDetail.WarningState)">{{ getWarningStateLabel(currentDetail.WarningState) }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '预警描述' }}：</strong>
+                    <strong>{{ tt('runtime.warningDescription', '预警描述') }}：</strong>
                     <span :title="WarningCode[currentDetail.WarningCode]">{{ WarningCode[currentDetail.WarningCode] || '--' }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '蜂鸣器状态' }}：</strong>
-                    <span :title="currentDetail.BuzzerState == 1 ? '鸣叫中' : currentDetail.BuzzerState == 2 ? '未鸣' : '未知'">{{ currentDetail.BuzzerState == 1 ? '鸣叫中' : currentDetail.BuzzerState == 2 ? '未鸣' : '未知' }}</span>
+                    <strong>{{ tt('runtime.buzzerStatus', '蜂鸣器状态') }}：</strong>
+                    <span :title="getBuzzerStateLabel(currentDetail.BuzzerState)">{{ getBuzzerStateLabel(currentDetail.BuzzerState) }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '设备离线原因' }}：</strong>
+                    <strong>{{ tt('runtime.offlineReason', '设备离线原因') }}：</strong>
                     <span :title="OfflineReason[currentDetail.OfflineReason]">{{ OfflineReason[currentDetail.OfflineReason] || '--' }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '电池剩余电量' }}：</strong>
+                    <strong>{{ tt('runtime.remainingBattery', '电池剩余电量') }}：</strong>
                     <span :title="currentDetail.SOC + '%'">{{ currentDetail.SOC }}%</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '软件版本号' }}：</strong>
+                    <strong>{{ tt('runtime.softwareVersion', '软件版本号') }}：</strong>
                     <span :title="currentDetail.ModuleSoftVersion">{{ currentDetail.ModuleSoftVersion || '--'}}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '硬件版本号' }}：</strong>
+                    <strong>{{ tt('runtime.hardwareVersion', '硬件版本号') }}：</strong>
                     <span :title="currentDetail.ModuleHardVersion">{{ currentDetail.ModuleHardVersion || '--'}}</span>
                 </div>
                 <!-- <div class="detail-row">
-                    <strong>{{ 'Mac地址' }}：</strong>
+                    <strong>{{ tt('runtime.macAddress', 'Mac地址') }}：</strong>
                     <span :title="currentDetail.Mac">{{ currentDetail.Mac || '--'}}</span>
                 </div> -->
                 <div class="detail-row detail-row-split">
-                    <strong>{{ '最后更新时间' }}：</strong>
+                    <strong>{{ tt('runtime.lastUpdateTime', '最后更新时间') }}：</strong>
                     <span :title="currentDetail.LastUpdateDateTime">{{ currentDetail.LastUpdateDateTime || '--'}}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '设备上线时间' }}：</strong>
+                    <strong>{{ tt('runtime.deviceOnlineTime', '设备上线时间') }}：</strong>
                     <span :title="currentDetail.OnlineTime">{{ currentDetail.OnlineTime || '--' }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '设备下线时间' }}：</strong>
+                    <strong>{{ tt('runtime.deviceOfflineTime', '设备下线时间') }}：</strong>
                     <span :title="currentDetail.OfflineTime">{{ currentDetail.OfflineTime || '--' }}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '最近升锁时间' }}：</strong>
+                    <strong>{{ tt('runtime.lastLockUpTime', '最近升锁时间') }}：</strong>
                     <span :title="currentDetail.LastLockUpDateTime">{{ currentDetail.LastLockUpDateTime || '--'}}</span>
                 </div>
                 <div class="detail-row">
-                    <strong>{{ '最近降锁时间' }}：</strong>
+                    <strong>{{ tt('runtime.lastLockDownTime', '最近降锁时间') }}：</strong>
                     <span :title="currentDetail.LastLockDownDateTime">{{ currentDetail.LastLockDownDateTime || '--'}}</span>
                 </div>
                 
@@ -259,8 +218,13 @@
 </template>
 
 <script setup>
+
+
+import { pageText } from '../pages/i18n';
+const tt = pageText;
 import { ref, onBeforeMount, onMounted, computed, onUnmounted, reactive, nextTick, watch, provide, toRef,defineEmits } from 'vue';
 import LockImg from './lockIMG.vue';
+
 const props = defineProps({
   lockDataValue: {
     type: Array,
@@ -290,36 +254,36 @@ watch(
 
 const Funcs = window.Funcs;
 const NetState = {
-  0:'初始',
-  1:'在线',
-  2:'离线', 
+  0: tt('runtime.initial', '初始'),
+  1: tt('runtime.online', '在线'),
+  2: tt('runtime.offline', '离线'), 
 };
 const lockDataVisible = ref(false);
 const currentDetail = ref(null);
 const isOnline = ref(false);
 const isOffline = ref(false);
 const FaultCode = {
-  0:'无故障',
-  1:'摇臂故障',
-  2:'电池电量不足',
-  3:'地磁故障',
-  4:'超声波故障',
-  5:'电机故障',
-  255:'其他故障',
+  0: tt('runtime.noFault', '无故障'),
+  1: tt('lock.swingArmFault', '摇臂故障'),
+  2: tt('lock.batteryLow', '电池电量不足'),
+  3: tt('lock.geomagneticFault', '地磁故障'),
+  4: tt('lock.ultrasonicFault', '超声波故障'),
+  5: tt('lock.motorFault', '电机故障'),
+  255: tt('runtime.otherFault', '其他故障'),
 };
 const WarningCode = {
-  0:'无预警',
-  1:'低电量预警',
-  2:'地锁受外力压迫',
-  255:'其他预警',
+  0: tt('runtime.noWarning', '无预警'),
+  1: tt('lock.lowBatteryWarning', '低电量预警'),
+  2: tt('lock.externalPressureWarning', '地锁受外力压迫'),
+  255: tt('runtime.otherWarning', '其他预警'),
 };
 const OfflineReason = {
-  0:'未知',
-  1:'断网',
-  2:'重启',
-  3:'断电',
-  4:'升级',
-  255:'其他',
+  0: tt('runtime.unknown', '未知'),
+  1: tt('runtime.networkDisconnected', '断网'),
+  2: tt('runtime.reboot', '重启'),
+  3: tt('runtime.powerOutage', '断电'),
+  4: tt('runtime.upgrade', '升级'),
+  255: tt('runtime.other', '其他'),
 };
 const Widget =  {
   lockTitle:null,
@@ -327,6 +291,85 @@ const Widget =  {
   lockIcon:null,
   lockBtn:null,
 };
+
+const getLockStateLabel = (value) => {
+  if (value == 1) return tt('lock.raise', '升锁');
+  if (value == 2) return tt('lock.lower', '降锁');
+  return tt('runtime.unknown', '未知');
+};
+
+const getDormancyLabel = (value) => {
+  if (value == 1) return tt('runtime.sleep', '休眠');
+  if (value == 2) return tt('runtime.notSleeping', '未休眠');
+  return tt('runtime.unknown', '未知');
+};
+
+const getParkingStateLabel = (value) => {
+  if (value == 1) return tt('runtime.hasCar', '有车');
+  if (value == 2) return tt('runtime.noCar', '无车');
+  return tt('runtime.unknown', '未知');
+};
+
+const getFaultStateLabel = (value) => {
+  if (value == 1) return tt('runtime.withFault', '有故障');
+  if (value == 2) return tt('runtime.noFault', '无故障');
+  return tt('runtime.unknown', '未知');
+};
+
+const getWarningStateLabel = (value) => {
+  if (value == 1) return tt('runtime.withWarning', '有预警');
+  if (value == 2) return tt('runtime.noWarning', '无预警');
+  return tt('runtime.unknown', '未知');
+};
+
+const getBuzzerStateLabel = (value) => {
+  if (value == 1) return tt('runtime.buzzing', '鸣叫中');
+  if (value == 2) return tt('runtime.silent', '未鸣');
+  return tt('runtime.unknown', '未知');
+};
+
+const getLockActionItems = (item) => ([
+  {
+    label: tt('runtime.reboot', '重启'),
+    value: '1',
+    icon: 'fas dx-icon icon-t-redo',
+    type: 'default',
+    hint: tt('runtime.reboot', '重启'),
+    visible: true,
+    disabled: item.NetState == 1,
+    code: 'btnredo',
+  },
+  {
+    label: tt('runtime.sleep', '休眠'),
+    value: '2',
+    icon: 'fas dx-icon icon-t-unlink',
+    type: 'default',
+    hint: tt('runtime.sleep', '休眠'),
+    visible: item.DormancyState != 1,
+    disabled: item.DormancyState != 2 || item.NetState != 1,
+    code: 'btnsleep',
+  },
+  {
+    label: tt('runtime.wake', '唤醒'),
+    value: '3',
+    icon: 'fas dx-icon icon-t-link',
+    type: 'default',
+    hint: tt('runtime.wake', '唤醒'),
+    visible: item.DormancyState == 1,
+    disabled: item.NetState != 1,
+    code: 'btnwake',
+  },
+  {
+    label: tt('runtime.deviceLog', '设备日志'),
+    value: '4',
+    icon: 'fas dx-icon icon-t-file-text',
+    type: 'default',
+    hint: tt('runtime.deviceLog', '设备日志'),
+    visible: true,
+    disabled: false,
+    code: 'btntext',
+  }
+]);
 
 window.addPCStyle();
 async function Page_OnError(e) {
@@ -378,11 +421,11 @@ async function btnGroup_lock_btnGroupItemClick(action,row,item) {
 }
 const changeLockState = async (device,actionType) => {
   if(device.NetState != 1){
-    Funcs.Notify('提示', '当地锁状态为在线时才允许进行操作！', 'error');
+    Funcs.Notify(tt('runtime.prompt', '提示'), tt('runtime.onlineOnlyLockOperation', '当地锁状态为在线时才允许进行操作！'), 'error');
     return;
   }
-  const actionText = actionType == 1 ? '升锁' : '降锁';
-  Funcs.Confirm('提示',`您确认要执行${ actionText }操作吗？`, () => {
+  const actionText = actionType == 1 ? tt('lock.raise', '升锁') : tt('lock.lower', '降锁');
+  Funcs.Confirm(tt('runtime.prompt', '提示'), tt('runtime.confirmAction', '您确认要执行{action}操作吗？').replace('{action}', actionText), () => {
     const postData = {
       TenantId: props.TenantId,
       DeviceKey: device.DeviceKey,
@@ -397,29 +440,29 @@ const changeLockState = async (device,actionType) => {
       data: { request: JSON.stringify(postData) }
     }).then(async (result) => {
       if(result.state == 0){
-        Funcs.Notify('提示', `${ result.errmsg }`, 'error');
+        Funcs.Notify(tt('runtime.prompt', '提示'), `${ result.errmsg }`, 'error');
         return;
       }
       if(result.data && result.data.Code && result.data.Code != 200){
-        Funcs.Notify('提示', result.data.OutputParams[ 0 ].Value, 'error');
+        Funcs.Notify(tt('runtime.prompt', '提示'), result.data.OutputParams[ 0 ].Value, 'error');
         return;
       }
       if(result.data && result.data.Code && result.data.Code == 200){
-        Funcs.Notify('提示', '下发成功', 'success');
+        Funcs.Notify(tt('runtime.prompt', '提示'), tt('runtime.issueSuccess', '下发成功'), 'success');
         sendToParentRefresh();
       }
     }).catch((error) => {
-      Funcs.Notify('提示', '地锁操作有误', 'error');
+      Funcs.Notify(tt('runtime.prompt', '提示'), tt('runtime.lockOperationError', '地锁操作有误'), 'error');
     });
   });
 };
 const operationLock = async (device,actionType) => {
   if(device.NetState != 1){
-    Funcs.Notify('提示', '当地锁状态为在线时才允许进行操作！', 'error');
+    Funcs.Notify(tt('runtime.prompt', '提示'), tt('runtime.onlineOnlyLockOperation', '当地锁状态为在线时才允许进行操作！'), 'error');
     return;
   }
-  const actionText = actionType == 1 ? '重启' : actionType == 2 ? '休眠' : actionType == 3 ? '唤醒' : '';
-  Funcs.Confirm('提示',`您确认要执行${ actionText }操作吗？`, () => {
+  const actionText = actionType == 1 ? tt('runtime.reboot', '重启') : actionType == 2 ? tt('runtime.sleep', '休眠') : actionType == 3 ? tt('runtime.wake', '唤醒') : '';
+  Funcs.Confirm(tt('runtime.prompt', '提示'), tt('runtime.confirmAction', '您确认要执行{action}操作吗？').replace('{action}', actionText), () => {
     const postData = {
       TenantId: props.TenantId,
       DeviceKey: device.DeviceKey,
@@ -434,19 +477,19 @@ const operationLock = async (device,actionType) => {
       data: { request: JSON.stringify(postData) }
     }).then(async (result) => {
       if(result.state == 0){
-        Funcs.Notify('提示', `${ result.errmsg }`, 'error');
+        Funcs.Notify(tt('runtime.prompt', '提示'), `${ result.errmsg }`, 'error');
         return;
       }
       if(result.data && result.data.Code && result.data.Code != 200){
-        Funcs.Notify('提示', result.data.OutputParams[ 0 ].Value, 'error');
+        Funcs.Notify(tt('runtime.prompt', '提示'), result.data.OutputParams[ 0 ].Value, 'error');
         return;
       }
       if(result.data && result.data.Code && result.data.Code == 200){
-        Funcs.Notify('提示', '下发成功', 'success');
+        Funcs.Notify(tt('runtime.prompt', '提示'), tt('runtime.issueSuccess', '下发成功'), 'success');
         sendToParentRefresh();
       }
     }).catch((error) => {
-      Funcs.Notify('提示', '地锁操作有误', 'error');
+      Funcs.Notify(tt('runtime.prompt', '提示'), tt('runtime.lockOperationError', '地锁操作有误'), 'error');
     });
   });
 };

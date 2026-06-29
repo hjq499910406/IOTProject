@@ -4,9 +4,7 @@
             <div v-if="ISPC" class="terminal-panel__filters terminal-panel__filters--pc">
                 <div class="terminal-panel__filter-column">
                     <div class="terminal-panel__filter-row">
-                        <span class="terminal-panel__section-title">
-                            {{ $t('Schema.Page.UCTerminalList.Controls.fasr_label_7beac9.ConstValue', '终端状态') }}
-                        </span>
+                        <span class="terminal-panel__section-title">{{ tt('terminal.status') }}</span>
                         <div class="terminal-panel__state-wrap">
                             <!-- 移除了"全部"选项 -->
                             <div v-for="item in primaryStateOptions" :key="item.key"
@@ -23,11 +21,7 @@
                 <div class="terminal-panel__abnormal-section">
                     <div class="terminal-panel__filter-row">
                         <div class="terminal-panel__abnormal-title-wrap">
-                            <span class="terminal-panel__section-title">
-                                {{
-                                    $t('Schema.Page.UCTerminalList.Controls.fasr_label_937101_Copybeac937101_Copy.ConstValue',
-                                '异常终端') }}
-                            </span>
+                            <span class="terminal-panel__section-title">{{ tt('terminal.abnormal') }}</span>
                         </div>
                         <div class="terminal-panel__abnormal-chip-wrap">
                             <div v-for="item in abnormalStateOptions" :key="item.key"
@@ -43,14 +37,14 @@
 
                 </div>
                 <t-select itemsDataSourceType='dynamic'
-                    :label="$t('Schema.Page.Page115124.Controls.fasr_select7d4893.label', '集控器')" :useInput='true'
+                    :label="tt('terminal.controller')" :useInput='true'
                     helpPlacement='bottom' labelPosition='left' optionsPosition='' valueField="value"
                     displayField="label" :listDataSource='CtrlList' v-model="SelectedCtrlId">
                 </t-select>
             </div>
             <div v-if="!ISPC" class="terminal-panel__filters terminal-panel__filters--mobile">
                 <div class="terminal-panel__mobile-section">
-                    <div class="terminal-panel__mobile-section-title">终端状态</div>
+                    <div class="terminal-panel__mobile-section-title">{{ tt('terminal.status') }}</div>
                     <div class="terminal-panel__mobile-row">
                         <div v-for="item in primaryStateOptions" :key="`mobile-${item.key}`"
                             class="terminal-panel__state-chip terminal-panel__state-chip--mobile"
@@ -60,7 +54,7 @@
                     </div>
                 </div>
                 <div class="terminal-panel__mobile-section">
-                    <div class="terminal-panel__mobile-section-title">异常终端</div>
+                    <div class="terminal-panel__mobile-section-title">{{ tt('terminal.abnormal') }}</div>
                     <div class="terminal-panel__mobile-row">
                         <div v-for="item in abnormalStateOptions" :key="`mobile-${item.key}`"
                             class="terminal-panel__state-chip terminal-panel__state-chip--mobile"
@@ -72,31 +66,27 @@
             </div>
             <div class="terminal-panel__tab-container">
                 <div class="terminal-panel__header">
-                    <span class="terminal-panel__device-title">设备列表</span>
+                    <span class="terminal-panel__device-title">{{ tt('device.list') }}</span>
                     <div class="terminal-panel__action-bar">
                         <template v-if="ISPC">
-                            <t-button v-show="isDetail" class="tr-button-default" label="字段设置" :showHint="true"
+                            <t-button v-show="isDetail" class="tr-button-default" :label="tt('terminal.fieldSettings')" :showHint="true"
                                 :tabIndex="1" @click="openFieldSettings">
                             </t-button>
                             <div class="terminal-panel__detail-toggle-wrap">
-                                <span class="terminal-panel__detail-label">
-                                    {{
-                                        $t('Schema.Page.UCTerminalList.Controls.fasr_label_288174_Copye288174_Copyc288174_Copy.ConstValue',
-                                    '详细信息') }}
-                                </span>
+                                <span class="terminal-panel__detail-label">{{ tt('common.details') }}</span>
                                 <t-toggle class="terminal-panel__toggle"
-                                    :label="$t('Schema.Page.UCTerminalList.Controls.fasr_toggle_1a3051.Label', '详细信息')"
+                                    :label="tt('common.details')"
                                     helpPlacement='bottom' labelPosition='left' :tabIndex='1' :hideLabel='true'
                                     @change='handleDetailToggleChange' v-model='isDetail'>
                                 </t-toggle>
                             </div>
-                            <t-button class="tr-button-primary" label="一键开启充电" :showHint="true" :tabIndex="1"
+                            <t-button class="tr-button-primary" :label="tt('terminal.startChargingAll')" :showHint="true" :tabIndex="1"
                                 :loading="LoadingStartOneKeyCharge" @click="startCharging">
                             </t-button>
-                            <t-button class="tr-button-default" label="一键结束充电" :showHint="true" :tabIndex="1"
+                            <t-button class="tr-button-default" :label="tt('terminal.stopChargingAll')" :showHint="true" :tabIndex="1"
                                 :loading="LoadingStopOneKeyCharge" @click="stopCharging">
                             </t-button>
-                            <t-button class="tr-button-default" label="定时充电" :showHint="true" :tabIndex="1"
+                            <t-button class="tr-button-default" :label="tt('terminal.scheduledCharging')" :showHint="true" :tabIndex="1"
                                 @click="setTimedCharging">
                             </t-button>
                         </template>
@@ -110,25 +100,25 @@
                             </button>
                             <div v-if="mobileActionMenuVisible" class="terminal-panel__mobile-menu" @click.stop>
                                 <span class="terminal-panel__mobile-menu-item" @click="handleMobileStartCharging">
-                                    一键开启充电
+                                    {{ tt('terminal.startChargingAll') }}
                                 </span>
                                 <span class="terminal-panel__mobile-menu-item" @click="handleMobileStopCharging">
-                                    一键结束充电
+                                    {{ tt('terminal.stopChargingAll') }}
                                 </span>
                                 <span class="terminal-panel__mobile-menu-item" @click="handleMobileSetTimedCharging">
-                                    定时充电
+                                    {{ tt('terminal.scheduledCharging') }}
                                 </span>
                                 <span class="terminal-panel__mobile-menu-item terminal-panel__mobile-menu-item--toggle">
-                                    <span>详细信息</span>
+                                    <span>{{ tt('common.details') }}</span>
                                     <t-toggle class="terminal-panel__toggle terminal-panel__toggle--mobile"
-                                        :label="$t('Schema.Page.UCTerminalList.Controls.fasr_toggle_1a3051.Label', '详细信息')"
+                                        :label="tt('common.details')"
                                         helpPlacement='bottom' labelPosition='left' :tabIndex='1' :hideLabel='true'
                                         @change='handleDetailToggleChange' v-model='isDetail'>
                                     </t-toggle>
                                 </span>
                                 <span v-if="isDetail" class="terminal-panel__mobile-menu-item"
                                     @click="handleMobileFieldSetting">
-                                    字段设置
+                                    {{ tt('terminal.fieldSettings') }}
                                 </span>
                             </div>
                         </div>
@@ -149,7 +139,7 @@
         <t-dialog v-model:show="IfShowTimingOneKeyCharge" :position="positionDialog">
             <div class="terminal-panel__dialog">
                 <div class="terminal-panel__dialog-title-row">
-                    <span class="terminal-panel__dialog-title">定时充电</span>
+                    <span class="terminal-panel__dialog-title">{{ tt('terminal.scheduledCharging') }}</span>
                     <t-button class=' tr-button-icon-text2' label='' icon='fas dx-icon icon-t-delete-01'
                         :showHint='true' @click="IfShowTimingOneKeyCharge = false" :tabIndex='1' v-close-popup>
                     </t-button>
@@ -158,11 +148,11 @@
                     <div v-if="TimingOneKeyCharge.length > 0">
                         <div class="card">
                             <div class="terminal-panel__dialog-item-row">
-                                <div class="terminal-panel__dialog-field">电站</div>
+                                <div class="terminal-panel__dialog-field">{{ tt('station.name') }}</div>
                                 <div class="value">{{ currentStation.Name }}</div>
                             </div>
                             <div class="terminal-panel__dialog-item-row">
-                                <div class="terminal-panel__dialog-field">充电时间</div>
+                                <div class="terminal-panel__dialog-field">{{ tt('charge.chargeTime') }}</div>
                                 <div class="value">
                                     <div class="time-item" :key="item.ChargeTime" v-for="item in TimingOneKeyCharge">
                                         {{ item.ChargeTime }}</div>
@@ -170,10 +160,10 @@
                                 </div>
                             </div>
                             <div class="terminal-panel__dialog-item-row terminal-panel__dialog-item-row--last">
-                                <div class="terminal-panel__dialog-field">定时类型</div>
+                                <div class="terminal-panel__dialog-field">{{ tt('terminal.scheduleType') }}</div>
                                 <div class="value">
-                                    <span>{{ TimingOneKeyCharge[0].TimeType == 1 ? '仅定时一次' : '长期定时' }}</span>
-                                    <span v-if="TimingOneKeyCharge[0].IsCompensate == 0">（充电失败后3分钟自动重试）</span>
+                                    <span>{{ TimingOneKeyCharge[0].TimeType == 1 ? tt('terminal.scheduledOnce') : tt('terminal.scheduledLongTerm') }}</span>
+                                    <span v-if="TimingOneKeyCharge[0].IsCompensate == 0">{{ tt('terminal.retryAfterChargeFail') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -182,18 +172,18 @@
                     <div v-else>
                         <div class="card">
                             <div class="terminal-panel__dialog-item-row">
-                                <div class="terminal-panel__dialog-field">电站</div>
+                                <div class="terminal-panel__dialog-field">{{ tt('station.name') }}</div>
                                 <div class="value">{{ currentStation.Name }}</div>
                             </div>
                             <div class="terminal-panel__dialog-item-row">
-                                <div class="terminal-panel__dialog-field">充电时间</div>
+                                <div class="terminal-panel__dialog-field">{{ tt('charge.chargeTime') }}</div>
                                 <div class="value" id="OneCharge">
                                     <div class="time-input terminal-panel__time-input-row" :key="index"
                                         v-for="(item, index) in timingOneKeyChargeForm.ChargeTimeList">
 
                                         <t-date-time class="terminal-panel__time-picker tr-datetime-div"
                                             v-model="item.time" :hideLabel='true' displayFormatWithTime='HH:mm'
-                                            helpPlacement='bottom' dateType='time' placeholder="任意时间点">
+                                            helpPlacement='bottom' dateType='time' :placeholder="tt('terminal.anyTimePoint')">
                                         </t-date-time>
                                         <!-- 减号按钮 -->
                                         <t-button icon="fas dx-icon icon-t-delete-01" label=""
@@ -205,22 +195,21 @@
                                     <div v-show="timingOneKeyChargeForm.ChargeTimeList.length < 6"
                                         class="terminal-panel__add-time-row">
                                         <!-- 添加按钮 -->
-                                        <t-button label="添加" class="tr-button-default" :show-hint="true" icon="add"
+                                        <t-button :label="tt('common.add')" class="tr-button-default" :show-hint="true" icon="add"
                                             @click="addChargeTimeList" />
-                                        <span>（最多添加6个，仍可添加 {{ 6 - timingOneKeyChargeForm.ChargeTimeList.length }}
-                                            个）</span>
+                                        <span>{{ getAddTimeLimitHint() }}</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="terminal-panel__dialog-item-row terminal-panel__dialog-item-row--last">
-                                <div class="terminal-panel__dialog-field">定时类型</div>
+                                <div class="terminal-panel__dialog-field">{{ tt('terminal.scheduleType') }}</div>
                                 <div class="value">
                                     <div>
 
                                         <t-checkbox-group label="" v-model="timingOneKeyChargeForm.IsCompensate"
                                             displayFiled="label" valueFiled="value"
                                             :readonly="TimingOneKeyCharge.length == 0" :options="[
-                                                { label: '充电失败后3分钟自动重试（仅重试一次）', value: '0' },
+                                                { label: tt('terminal.retryAfterChargeFailOnce'), value: '0' },
                                             ]" />
                                     </div>
                                     <div>
@@ -235,15 +224,15 @@
 
                     <span slot="footer" class="select_helper_popup_foot">
                         <div v-if="TimingOneKeyCharge.length > 0">
-                            <t-button flat label="返回" class="tr-button-default"
+                            <t-button flat :label="tt('common.back')" class="tr-button-default"
                                 @click="IfShowTimingOneKeyCharge = false" />
-                            <t-button flat label="撤销" class="tr-button-primary"
+                            <t-button flat :label="tt('common.undo')" class="tr-button-primary"
                                 :loading="loadingRemoveTimingOneKeyCharge" @click="removeTimingOneKeyCharge" />
                         </div>
                         <div v-else>
-                            <t-button flat label="返回" class="tr-button-default"
+                            <t-button flat :label="tt('common.back')" class="tr-button-default"
                                 @click="IfShowTimingOneKeyCharge = false" />
-                            <t-button flat label="保存" class="tr-button-primary" @click="saveTimingOneKeyCharge" />
+                            <t-button flat :label="tt('common.save')" class="tr-button-primary" @click="saveTimingOneKeyCharge" />
                         </div>
                     </span>
                 </div>
@@ -253,6 +242,10 @@
 </template>
 
 <script setup>
+
+import { pageText } from '../../../pages/i18n';
+const tt = pageText;
+
 import {
     ref,
     onMounted,
@@ -266,6 +259,7 @@ import {
 } from 'vue';
 import { ActionClass } from '../../../fas/models/ActionClass';
 import { ActionClassAsync } from '../../../fas/models/ActionClassAsync';
+
 const Funcs = window.Funcs;
 import '../../../fas/action/Action_GetStaPiles';
 import '../../../fas/action/Action_GetStaAndPileCount';
@@ -352,8 +346,8 @@ const timingOneKeyChargeForm = reactive({
 });
 const loadingRemoveTimingOneKeyCharge = ref(false);
 const oneKeyChargeTimeType = [
-    { label: '仅定时一次', value: 1 },
-    { label: '长期定时', value: 2 }
+    { label: tt('terminal.scheduledOnce'), value: 1 },
+    { label: tt('terminal.scheduledLongTerm'), value: 2 }
 ];
 const MIN_CHARGE_TIME_INTERVAL_MINUTES = 10;
 const LoadingStartOneKeyCharge = ref(false);
@@ -389,8 +383,8 @@ const validateChargeTimeList = (chargeTimeList) => {
     for (let i = 1; i < sortedTimeList.length; i++) {
         if (sortedTimeList[i] - sortedTimeList[i - 1] < 60000 * MIN_CHARGE_TIME_INTERVAL_MINUTES) {
             Funcs.Notify(
-                '消息',
-                `时间间隔必须大于等于${MIN_CHARGE_TIME_INTERVAL_MINUTES}分钟!`,
+                tt('runtime.message'),
+                tt('terminal.chargeTimeIntervalMin').replace('{minutes}', MIN_CHARGE_TIME_INTERVAL_MINUTES),
                 'warning'
             );
             return false;
@@ -402,19 +396,19 @@ const validateChargeTimeList = (chargeTimeList) => {
 
 const saveTimingOneKeyCharge = () => {
     const StaId = currentStation.ID || unref(stationId);
-    if (!StaId) return Funcs.Notify('消息', '请先选择电站', 'warning');
+    if (!StaId) return Funcs.Notify(tt('runtime.message'), tt('runtime.selectStationFirst'), 'warning');
 
     const ChargeTimeList = timingOneKeyChargeForm.ChargeTimeList.map((v) => v.time);
     if (!validateChargeTimeList(ChargeTimeList)) return;
 
     saveTimingOneKeyChargeApi(StaId, timingOneKeyChargeForm, ChargeTimeList).then((result) => {
         if (result.success) {
-            Funcs.Notify('消息', '定时成功', 'success');
+            Funcs.Notify(tt('runtime.message'), tt('terminal.timingSuccess'), 'success');
             resetTimingOneKeyChargeForm();
             IfShowTimingOneKeyCharge.value = false;
         }
         else {
-            Funcs.Notify('消息', result.errorMessage || '定时失败', 'error');
+            Funcs.Notify(tt('runtime.message'), result.errorMessage || tt('terminal.timingFail'), 'error');
         }
     });
 };
@@ -424,11 +418,11 @@ const removeTimingOneKeyCharge = () => {
     removeTimingOneKeyChargeApi(staId, TimingOneKeyCharge.value).then((result) => {
         loadingRemoveTimingOneKeyCharge.value = false;
         if (result.success) {
-            Funcs.Notify('消息', '移除成功', 'success');
+            Funcs.Notify(tt('runtime.message'), tt('terminal.removeSuccess'), 'success');
             IfShowTimingOneKeyCharge.value = false;
         }
         else {
-            Funcs.Notify('消息', result.errorMessage || '移除失败', 'error');
+            Funcs.Notify(tt('runtime.message'), result.errorMessage || tt('terminal.removeFail'), 'error');
         }
     });
 };
@@ -446,21 +440,24 @@ const addChargeTimeList = () => {
 const removeChargeTimeList = (index) => {
     timingOneKeyChargeForm.ChargeTimeList.splice(index, 1);
 };
+const getAddTimeLimitHint = () => tt('terminal.addTimeLimitHint')
+    .replace('{max}', 6)
+    .replace('{remain}', 6 - timingOneKeyChargeForm.ChargeTimeList.length);
 const startCharging = () => {
     if (LoadingStartOneKeyCharge.value) return;
-  const List = terminalPiles.value.filter((f) =>
-        ['已插枪', '已充电', '空闲'].includes(f.PileRealTimeState)
+    const List = terminalPiles.value.filter((pile) =>
+        hasPileStateCode(pile, [PILE_STATE.PutGun, PILE_STATE.Charged, PILE_STATE.Free])
     );
-  const unList = terminalPiles.value.filter(
-        (f) => !['已插枪', '已充电', '空闲'].includes(f.PileRealTimeState)
+    const unList = terminalPiles.value.filter(
+        (pile) => !hasPileStateCode(pile, [PILE_STATE.PutGun, PILE_STATE.Charged, PILE_STATE.Free])
     );
     if (List.length == 0) {
-        Funcs.Notify('消息', '当前没有处于\'已插枪或已充电或空闲（可启动充电）\'的终端', 'warning');
+        Funcs.Notify(tt('runtime.message'), tt('terminal.noStartableTerminal'), 'warning');
         return;
     }
     Funcs.Confirm(
-        '提示',
-        `确定要给本次${List.length}个已插枪或已充电或空闲（可启动充电）的终端充电吗?`,
+        tt('runtime.prompt'),
+        tt('terminal.startChargingAllConfirm').replace('{count}', List.length),
         () => {
             LoadingStartOneKeyCharge.value = true;
             startOneKeyChargeApi(
@@ -471,10 +468,10 @@ const startCharging = () => {
             )
                 .then((result) => {
                     if (result.success) {
-                        Funcs.Notify('消息', '指令下发成功', 'success');
+                        Funcs.Notify(tt('runtime.message'), tt('runtime.issueSuccess'), 'success');
                     }
                     else {
-                        Funcs.Notify('消息', result.errorMessage || '一键充电失败', 'warning');
+                        Funcs.Notify(tt('runtime.message'), result.errorMessage || tt('terminal.oneKeyStartChargingFail'), 'warning');
                     }
                 })
                 .finally(() => {
@@ -486,7 +483,7 @@ const startCharging = () => {
 const setTimedCharging = () => {
     const staId = unref(stationId);
     if (!staId) {
-        Funcs.Notify('消息', '请先选择电站', 'warning');
+        Funcs.Notify(tt('runtime.message'), tt('runtime.selectStationFirst'), 'warning');
         return;
     }
     currentStation.ID = staId;
@@ -497,19 +494,19 @@ const setTimedCharging = () => {
 
 const stopCharging = () => {
     if (LoadingStopOneKeyCharge.value) return;
-    if (terminalPiles.value.length == 0) return Funcs.Notify('消息', '当前电站没有集控', 'warning');
+    if (terminalPiles.value.length == 0) return Funcs.Notify(tt('runtime.message'), tt('terminal.noControllerInStation'), 'warning');
 
     LoadingStopOneKeyCharge.value = true;
     fetchStopChargeCountApi(unref(stationId), CtrlList.value)
         .then((result) => {
             if (result.success) {
                 if (result.count == 0) {
-                    Funcs.Notify('消息', '当前电站或所选集控没有需要停止充电的终端', 'warning');
+                    Funcs.Notify(tt('runtime.message'), tt('terminal.noTerminalNeedStopCharging'), 'warning');
                 }
                 else if (result.count > 0) {
                     Funcs.Confirm(
-                        '提示',
-                        `目前总共 ${result.count} 个正在充电的终端，确认全部停止充电吗？`,
+                        tt('runtime.prompt'),
+                        tt('terminal.stopChargingAllConfirm').replace('{count}', result.count),
                         function () {
                             stopOneKeyCharge();
                         }
@@ -517,7 +514,7 @@ const stopCharging = () => {
                 }
             }
             else {
-                Funcs.Notify('消息', result.errorMessage || '结束一键充电失败', 'error');
+                Funcs.Notify(tt('runtime.message'), result.errorMessage || tt('terminal.oneKeyStopChargingFail'), 'error');
             }
         })
         .finally(() => {
@@ -529,10 +526,10 @@ const stopOneKeyCharge = () => {
     stopOneKeyChargeApi(unref(stationId), CtrlList.value)
         .then((result) => {
             if (result.success) {
-                Funcs.Notify('消息', '指令下发成功', 'success');
+                Funcs.Notify(tt('runtime.message'), tt('runtime.issueSuccess'), 'success');
             }
             else {
-                Funcs.Notify('消息', result.errorMessage || '指令下发失败', 'error');
+                Funcs.Notify(tt('runtime.message'), result.errorMessage || tt('runtime.issueFail'), 'error');
             }
         })
         .finally(() => {
@@ -574,17 +571,17 @@ watch(
 const SelectedCtrlId = ref('');
 const LoadingPiles = ref(false);
 const primaryStateOptions = [
-    { key: 'free', label: '空闲', countKey: 'FreeStatePileCount' },
-    { key: 'charging', label: '充电中', countKey: 'ChargingStatePileCount' },
-    { key: 'gunInserted', label: '已插枪', countKey: 'ConnectedChargingCount' },
-    { key: 'chargeFull', label: '已充满', countKey: 'FullChargingCount' },
-    { key: 'offGrid', label: '离网', countKey: 'OffLineStatePileCount' },
-    { key: 'faulty', label: '故障', countKey: 'FaultStatePileCount' },
-    { key: 'other', label: '其他', countKey: 'OtherStatePileCount' }
+    { key: 'free', label: tt('terminal.free'), countKey: 'FreeStatePileCount' },
+    { key: 'charging', label: tt('runtime.chargingState'), countKey: 'ChargingStatePileCount' },
+    { key: 'gunInserted', label: tt('terminal.inserted'), countKey: 'ConnectedChargingCount' },
+    { key: 'chargeFull', label: tt('terminal.full'), countKey: 'FullChargingCount' },
+    { key: 'offGrid', label: tt('status.offGrid'), countKey: 'OffLineStatePileCount' },
+    { key: 'faulty', label: tt('status.fault'), countKey: 'FaultStatePileCount' },
+    { key: 'other', label: tt('terminal.other'), countKey: 'OtherStatePileCount' }
 ];
 const abnormalStateOptions = [
-    { key: 'high', label: '高异常', countKey: 'HighAbnormalCount' },
-    { key: 'slow', label: '充电慢', countKey: 'ChargeSlowCount' }
+    { key: 'high', label: tt('terminal.highAbnormal'), countKey: 'HighAbnormalCount' },
+    { key: 'slow', label: tt('terminal.chargeSlow'), countKey: 'ChargeSlowCount' }
 ] ;
 const PILE_STATE = Object.freeze({
     // 离线

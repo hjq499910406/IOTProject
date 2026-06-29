@@ -11,7 +11,7 @@
                 <t-label :ref='el => Widget["fasr_label_4643b6"] = el' style='    font-size:16px'
                     class='fasr_label_4643b6' :tabIndex='1' valueType='static' :showHint='true'
                     instanceCode='fasr_label_4643b6'
-                    :constValue="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_label_4643b6.ConstValue', '字段设置')">
+                    :constValue="tt('terminal.fieldSettings')">
                 </t-label>
                 <t-button :ref='el => Widget["fasr_button_c1342e"] = el' style='opacity:100%'
                     class='fasr_button_c1342e tr-button-icon-text2' icon='fas dx-icon icon-t-delete-01' :showHint='true'
@@ -36,12 +36,12 @@
                                     style='    font-size:14px;    font-family:AlibabaPuHuiTi;    color:rgba(0,0,0,0.80)'
                                     class='fasr_label_ea5b77' instanceCode='fasr_label_ea5b77' valueType='static'
                                     :showHint='true' :tabIndex='1'
-                                    :constValue="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_label_ea5b77.ConstValue', '车辆数据')">
+                                    :constValue="tt('terminal.vehicleData')">
                                 </t-label>
                                 <t-toggle :ref='el => Widget["fasr_toggle_782d90"] = el'
                                     style='    background:#F9F9F9' class='fasr_toggle_782d90'
                                     instanceCode='fasr_toggle_782d90'
-                                    :label="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_toggle_782d90.Label', '属性_1')"
+                                    :label="tt('terminal.vehicleData')"
                                     :hideLabel='true' helpPlacement='bottom' labelPosition='top' :tabIndex='1'
                                     v-model='fieldSettings.one'>
                                 </t-toggle>
@@ -50,7 +50,7 @@
                                 style='    color:rgba(0,0,0,0.32);    font-family:AlibabaPuHuiTi;    font-size:12px;    white-space: pre-wrap'
                                 class='fasr_label_23b17a' instanceCode='fasr_label_23b17a' valueType='static'
                                 :showHint='true' :tabIndex='1'
-                                :constValue="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_label_23b17a.ConstValue', '判定车系、车牌号、车架号、车辆自编号、路线、电池最高温度、电池最低温度')">
+                                :constValue="tt('terminal.vehicleDataDescription')">
                             </t-label>
                         </div>
                         <div :ref='el => Widget["fasr_div_d397393_Copydd"] = el'
@@ -64,13 +64,13 @@
                                     class='fasr_label_ea251814_Copyb251814_Copy'
                                     instanceCode='fasr_label_ea251814_Copyb251814_Copy' valueType='static'
                                     :showHint='true' :tabIndex='1'
-                                    :constValue="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_label_ea251814_Copyb251814_Copy.ConstValue', '充电信息')">
+                                    :constValue="tt('terminal.chargingInfo')">
                                 </t-label>
                                 <t-toggle :ref='el => Widget["fasr_toggle_639280_Copyd639280_Copy"] = el'
                                     style='    background:#F9F9F9'
                                     class='fasr_toggle_639280_Copyd639280_Copy'
                                     instanceCode='fasr_toggle_639280_Copyd639280_Copy'
-                                    :label="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_toggle_639280_Copyd639280_Copy.Label', '属性_2')"
+                                    :label="tt('terminal.chargingInfo')"
                                     :hideLabel='true' helpPlacement='bottom' labelPosition='top' :tabIndex='1'
                                     v-model='fieldSettings.two'>
                                 </t-toggle>
@@ -80,7 +80,7 @@
                                 class='fasr_label_993591_Copyb993591_Copya'
                                 instanceCode='fasr_label_993591_Copyb993591_Copya' valueType='static' :showHint='true'
                                 :tabIndex='1'
-                                :constValue="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_label_993591_Copyb993591_Copya.ConstValue', '插枪时间、启动方式、充电入口、初始SOC、预计剩余时间、充电结束时间、充电模式、群充策略')">
+                                :constValue="tt('terminal.chargingInfoDescription')">
                             </t-label>
                         </div>
                         <div :ref='el => Widget["fasr_div_d924306_Copydd"] = el'
@@ -94,13 +94,13 @@
                                     class='fasr_label_ea328212_Copyb328212_Copy'
                                     instanceCode='fasr_label_ea328212_Copyb328212_Copy' valueType='static'
                                     :showHint='true' :tabIndex='1'
-                                    :constValue="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_label_ea328212_Copyb328212_Copy.ConstValue', '充电效率')">
+                                    :constValue="tt('terminal.chargingEfficiency')">
                                 </t-label>
                                 <t-toggle :ref='el => Widget["fasr_toggle_166575_Copyd166575_Copy"] = el'
                                     style='    background:#F9F9F9'
                                     class='fasr_toggle_166575_Copyd166575_Copy'
                                     instanceCode='fasr_toggle_166575_Copyd166575_Copy'
-                                    :label="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_toggle_166575_Copyd166575_Copy.Label', '属性_3')"
+                                    :label="tt('terminal.chargingEfficiency')"
                                     :hideLabel='true' helpPlacement='bottom' labelPosition='top' :tabIndex='1'
                                     v-model='fieldSettings.three'>
                                 </t-toggle>
@@ -110,7 +110,7 @@
                                 class='fasr_label_914195_Copyb914195_Copya'
                                 instanceCode='fasr_label_914195_Copyb914195_Copya' valueType='static' :showHint='true'
                                 :tabIndex='1'
-                                :constValue="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_label_914195_Copyb914195_Copya.ConstValue', '实际电流、实际功率、平均需求电流、平均需求功率、最大需求电流、最大需求功率、电流满足率、功率满足率')">
+                                :constValue="tt('terminal.chargingEfficiencyDescription')">
                             </t-label>
                         </div>
                     </div>
@@ -120,13 +120,13 @@
                         instanceCode='fasr_div_a785349_Copy'>
                         <t-button :ref='el => Widget["fasr_button_71fced"] = el' style='opacity:100%'
                             class='fasr_button_71fced tr-button-default'
-                            :label="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_button_71fced.Label', '重置')"
+                            :label="tt('common.reset')"
                             instanceCode='fasr_button_71fced' :showHint='true' :tabIndex='1'
                             @click='resetFieldSettings'>
                         </t-button>
                         <t-button :ref='el => Widget["fasr_button_160069_Copyfced"] = el' style='opacity:100%'
                             class='fasr_button_160069_Copyfced tr-button-primary'
-                            :label="$t('Schema.Page.PageActionStaOperateDetail.Controls.fasr_button_160069_Copyfced.Label', '确定')"
+                            :label="tt('common.confirm')"
                             instanceCode='fasr_button_160069_Copyfced' :showHint='true' :tabIndex='1'
                             @click='confirmFieldSettings'>
                         </t-button>
@@ -138,7 +138,9 @@
 </template>
 
 <script setup>
+import { pageText } from '../../../pages/i18n';
 import { ref } from 'vue';
+const tt = pageText;
 const Widget = {
   fieldSettingsDialog: null,
 };

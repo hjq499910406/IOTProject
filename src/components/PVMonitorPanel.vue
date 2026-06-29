@@ -8,7 +8,7 @@
                      valueType='static'
                      :showHint='true'
                      :tabIndex='1'
-                     constValue='设备列表'>
+                     :constValue="tt('device.list', '设备列表')">
             </t-label>
             <i class="fas icon-t-refresh pv-refresh-icon"
                @click="sendToParentRefresh">
@@ -50,7 +50,7 @@
                             <lock-Img :pvOrEnergyMonitorState="item.StateName"></lock-Img>
                             <span @click.stop="openDetail(item)"
                                   class="detail-icon"
-                                  title="查看详情">
+                                  :title="tt('common.viewDetails', '查看详情')">
                                 详情
                                 <t-icon style='opacity:100%'
                                         class='lockIcon tr-icon-default'
@@ -78,9 +78,9 @@
                      style="justify-content: end;">
                     <span @click.stop="jumpLogPage(item)"
                           style="cursor: pointer;color: var(--t-color);margin-right: auto;align-self: center;margin-left: 4px;"
-                          title="查看报文">报文</span>
+                          :title="tt('message.viewMessage', '查看报文')">{{ tt('message.packet', '报文') }}</span>
                     <t-button class='tr-button-default'
-                              label='功率限制'
+                              :label="tt('power.limit', '功率限制')"
                               :showHint='true'
                               :tabIndex='1'
                               @click="changePVSet(item)"
@@ -88,14 +88,14 @@
                               v-show="(item.NetState == 1 && item.NetStateName != '故障')">
                     </t-button>
                     <t-button class='fasr_button_viceColor tr-button-default'
-                              label='启动发电'
+                              :label="tt('power.startGeneration', '启动发电')"
                               :showHint='true'
                               @click="changePVState(item, 1)"
                               :loading="isPVActionLoading(item, 1)"
                               v-show="!IsWorkIng(item) && (item.NetState == 1 && item.NetStateName != '故障')">
                     </t-button>
                     <t-button class='fasr_button_upLock tr-button-default'
-                              label='停止发电'
+                              :label="tt('power.stopGeneration', '停止发电')"
                               :showHint='true'
                               :tabIndex='1'
                               @click="changePVState(item, 2)"
@@ -105,7 +105,7 @@
                 </div>
             </div>
             <div v-if="pvList.length == 0"
-                 style="text-align: center;margin: 20px 0px;width: 100%;">无记录</div>
+                 style="text-align: center;margin: 20px 0px;width: 100%;">{{ tt('common.noRecords', '无记录') }}</div>
         </div>
         <detail-drawer v-model="pvDataVisible"
                        :items="detailItems"
@@ -130,10 +130,15 @@
 </template>
 
 <script setup>
+
+
+import { pageText } from '../pages/i18n';
+const tt = pageText;
 import { ref, onBeforeMount, onMounted, computed, onUnmounted, watch, defineEmits, reactive } from 'vue';
 import LockImg from './lockIMG.vue';
 import DetailDrawer from './DetailDrawer.vue';
 import PowerLimitation from './PowerLimitation.vue';
+
 const props = defineProps({
   pvDataValue: {
     type: Array,

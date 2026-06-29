@@ -3,7 +3,7 @@
         <div class="terminal-pile-card" :class="cardClass">
             <button v-if="pile.PileID" type="button" class="terminal-pile-card__order-trigger"
                 @click="showOrderCard">
-                <span class="terminal-pile-card__order-text">订</span>
+                <span class="terminal-pile-card__order-text">{{ tt('order.short') }}</span>
             </button>
             <div class="terminal-pile-card__content">
                 <div class="terminal-pile-card__title-row">
@@ -29,7 +29,7 @@
                                             name="fas dx-icon icon-t-charging-pile01-fill">
                                         </t-icon>
                                     </div>
-                                    <span class="terminal-pile-card__occupy-text">占用 {{ LocalVars.PileData.OccupyTime }}</span>
+                                    <span class="terminal-pile-card__occupy-text">{{ tt('terminal.occupy') }} {{ LocalVars.PileData.OccupyTime }}</span>
                                 </div>
                             </div>
                         </div>
@@ -49,9 +49,7 @@
                         </div>
 
                         <div class="terminal-pile-card__summary-row">
-                            <span class="terminal-pile-card__summary-label">
-                                {{ $t(summaryField.key, summaryField.fallback) }}
-                            </span>
+                            <span class="terminal-pile-card__summary-label">{{ tt(summaryField.key) }}</span>
                             <span class="terminal-pile-card__summary-value">{{ summaryValue }}</span>
                         </div>
                     </div>
@@ -66,9 +64,7 @@
                     <div class="terminal-pile-card__detail-content">
                         <div class="terminal-pile-card__detail-header">
                             <div class="terminal-pile-card__detail-item terminal-pile-card__detail-item--header">
-                                <span class="terminal-pile-card__field-label">
-                                    {{ $t(primaryDetailRow.key, primaryDetailRow.fallback) }}
-                                </span>
+                                <span class="terminal-pile-card__field-label">{{ tt(primaryDetailRow.key) }}</span>
                                 <span class="terminal-pile-card__field-value">{{ getFieldValue(primaryDetailRow) }}</span>
                             </div>
                             <div v-if="primaryDetailTags.length" class="terminal-pile-card__detail-tags">
@@ -85,7 +81,7 @@
                                         'terminal-pile-card__field-label',
                                         field.nowrap ? 'terminal-pile-card__field-label--nowrap' : ''
                                     ]">
-                                        {{ $t(field.key, field.fallback) }}
+                                        {{ tt(field.key) }}
                                     </span>
                                     <span class="terminal-pile-card__field-value">{{ getFieldValue(field) }}</span>
                                 </div>
@@ -109,7 +105,7 @@
                                     'terminal-pile-card__field-label',
                                     field.nowrap ? 'terminal-pile-card__field-label--nowrap' : ''
                                 ]">
-                                    {{ $t(field.key, field.fallback) }}
+                                    {{ tt(field.key) }}
                                 </span>
                                 <span class="terminal-pile-card__field-value">{{ getFieldValue(field) }}</span>
                             </div>
@@ -120,8 +116,7 @@
 
             <div class="terminal-pile-card__footer terminal-pile-card__footer--actions">
                 <t-button class="tr-button-default terminal-pile-card__start-button"
-                    :label="$t('Schema.Page.UCChargeFullTerminal.Controls.fasr_button_1a48cf.Label', '开始充电')"
-                    :showHint="true" @click="showStartChargePop">
+                    :label="tt('charge.startCharging')" :showHint="true" @click="showStartChargePop">
                 </t-button>
             </div>
         </div>
@@ -129,30 +124,30 @@
         <t-dialog v-model:show="IfShowStartCharge" :position="LocalVars.position" :maximized="LocalVars.maximized">
             <div class="startcharge-dialog terminal-pile-card__dialog">
                 <div class="terminal-pile-card__dialog-header">
-                    <span class="terminal-pile-card__dialog-title">开始充电</span>
+                    <span class="terminal-pile-card__dialog-title">{{ tt('charge.startCharging') }}</span>
                     <t-button class="tr-button-icon-text2" label="" icon="fas dx-icon icon-t-delete-01"
                         :showHint="true" @click="IfShowStartCharge = false" v-close-popup>
                     </t-button>
                 </div>
                 <div class="terminal-pile-card__dialog-body">
                     <div class="m-startcharge">
-                        <div class="hint"><i class="el-icon-warning"></i> 确认要给终端【{{ pile.PileName }}】启动充电吗？</div>
+                        <div class="hint"><i class="el-icon-warning"></i> {{ tt('terminal.confirmStartCharge').replace('{name}', pile.PileName || '') }}</div>
                         <div v-show="pile.IsSetPileLimitSOC">
                             <div class="content">
-                                充到SOC
+                                {{ tt('terminal.chargeToSoc') }}
                                 <div class="u-input-per">
                                     <input class="input" v-model="SingleChargeSOC"
                                         @blur="SingleChargeSOC = toSocNumber(SingleChargeSOC)" type="text">
                                     <i class="icon">%</i>
                                 </div>
-                                结束充电
+                                {{ tt('terminal.endCharging') }}
                             </div>
                         </div>
                     </div>
                     <span slot="footer" class="terminal-pile-card__dialog-footer">
-                        <t-button flat label="取消" class="tr-button-default" :disable="loadingStartCharge"
+                        <t-button flat :label="tt('common.cancel')" class="tr-button-default" :disable="loadingStartCharge"
                             @click="IfShowStartCharge = false" />
-                        <t-button flat label="确定" class="tr-button-primary" :loading="loadingStartCharge"
+                        <t-button flat :label="tt('common.confirm')" class="tr-button-primary" :loading="loadingStartCharge"
                             @click="confirmStartCharge" />
                     </span>
                 </div>
@@ -176,9 +171,14 @@
 </template>
 
 <script setup>
+
+import { pageText } from '../../../../pages/i18n';
+const tt = pageText;
+
 import { computed, ref } from 'vue';
 import LastChargeOrderDialog from '../../shared/LastChargeOrderDialog.vue';
 import { useLastChargeOrder } from '../../shared/useLastChargeOrder.js';
+
 
 const props = defineProps({
     localVars: Object
@@ -188,7 +188,7 @@ const { TeldProductVersionType } = window;
 const LocalVars = props.localVars;
 const fireUCEvent = defineEmits(['OnFireEvent']);
 const detailPlaceholder = '--';
-const statusLabel = '已插枪';
+const statusLabel = tt('terminal.inserted');
 const SingleChargeSOC = ref(100);
 const IfShowStartCharge = ref(false);
 const loadingStartCharge = ref(false);
@@ -210,7 +210,7 @@ const stateTagTextClass = computed(() => [
     'terminal-pile-card__state-tag-text',
     isCharged.value ? 'terminal-pile-card__state-tag-text--charged' : 'terminal-pile-card__state-tag-text--uncharged'
 ]);
-const stateTagLabel = computed(() => (isCharged.value ? '已充电' : '未充电'));
+const stateTagLabel = computed(() => (isCharged.value ? tt('terminal.charged') : tt('terminal.uncharged')));
 const showChargingPowerTag = computed(() => pile.value.ChargingPower && pile.value.ChargingPower !== '--');
 
 function getDetailValue(value) {
@@ -227,12 +227,10 @@ function getFieldValue(field) {
 const summaryField = computed(() =>
     isCharged.value
         ? {
-            key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_322033_Copydd322033_Copyf.ConstValue',
-            fallback: '充电结束时间:'
+            key: 'terminal.detail.chargingEndTime'
         }
         : {
-            key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_675878_Copydd675878_Copyf.ConstValue',
-            fallback: '插枪时间:'
+            key: 'terminal.detail.gunInsertionTime'
         }
 );
 const summaryValue = computed(() =>
@@ -240,8 +238,7 @@ const summaryValue = computed(() =>
 );
 
 const primaryDetailRow = {
-    key: 'Schema.Page.UCChargingTerminal.Controls.fasr_label_e314381_Copy.ConstValue',
-    fallback: '客户名称',
+    key: 'terminal.detail.customerName',
     valueKey: 'CustomerPhone'
 };
 const primaryDetailTags = computed(() =>
@@ -252,26 +249,22 @@ const primaryDetailTags = computed(() =>
 const primaryDetailColumns = [
     [
         {
-            key: 'Schema.Page.UCChargingTerminal.Controls.fasr_label_e719153_Copy.ConstValue',
-            fallback: '充电开始时间',
+            key: 'terminal.detail.chargingStartTime',
             valueKey: 'ChargingBeginTime',
             nowrap: true
         },
         {
-            key: 'Schema.Page.UCChargingTerminal.Controls.fasr_label_e351115_Copy.ConstValue',
-            fallback: '已充时长',
+            key: 'terminal.detail.chargedDuration',
             valueKey: 'ChargingTime'
         }
     ],
     [
         {
-            key: 'Schema.Page.UCChargingTerminal.Controls.fasr_label_e966623_Copy.ConstValue',
-            fallback: '充电费用',
+            key: 'terminal.detail.chargingFee',
             valueKey: 'ChargingMoney'
         },
         {
-            key: 'Schema.Page.UCChargingTerminal.Controls.fasr_label_e848877_Copy.ConstValue',
-            fallback: '充电量',
+            key: 'terminal.chargeAmount',
             valueKey: 'ChargingPower'
         }
     ]
@@ -283,47 +276,40 @@ const detailSections = [
         rows: [
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_7dd81f.ConstValue',
-                    fallback: '判定车系',
+                    key: 'terminal.detail.carSeries',
                     valueKey: 'CarSeriesName'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_247335_Copydd247335_Copyf.ConstValue',
-                    fallback: '车牌号',
+                    key: 'terminal.detail.licensePlate',
                     valueKey: 'CarNumber',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_386241_Copydd386241_Copyf.ConstValue',
-                    fallback: '车架号',
+                    key: 'terminal.detail.vin',
                     valueKey: 'VIN',
                     full: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_695984_Copydd695984_Copyf.ConstValue',
-                    fallback: '车辆自编号',
+                    key: 'terminal.detail.vehicleCode',
                     valueKey: 'VehicleCode'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_384687_Copydd384687_Copyf.ConstValue',
-                    fallback: '路线',
+                    key: 'terminal.detail.route',
                     valueKey: 'Route',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_779803_Copydd779803_Copyf.ConstValue',
-                    fallback: '电池最高温度',
+                    key: 'terminal.detail.maxBatteryTemperature',
                     valueKey: 'MaxTemperature'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_955825_Copydd955825_Copyf.ConstValue',
-                    fallback: '电池最低温度',
+                    key: 'terminal.detail.minBatteryTemperature',
                     valueKey: 'MinTemperature',
                     offset: true
                 }
@@ -336,39 +322,33 @@ const detailSections = [
         rows: [
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_796168_Copydd796168_Copyf.ConstValue',
-                    fallback: '插枪时间',
+                    key: 'terminal.detail.gunInsertionTime',
                     valueKey: 'GunInsertionTime'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_775321_Copydd775321_Copyf.ConstValue',
-                    fallback: '启动方式',
+                    key: 'terminal.detail.chargeStartMethod',
                     valueKey: 'ChargeNames',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_424176_Copydd424176_Copyf.ConstValue',
-                    fallback: '充电入口',
+                    key: 'terminal.detail.chargeEntry',
                     valueKey: 'ChargeEnter'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_360184_Copydd360184_Copyf.ConstValue',
-                    fallback: '初始SOC',
+                    key: 'terminal.detail.initialSoc',
                     valueKey: 'InitSOC',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_125853_Copydd125853_Copyf.ConstValue',
-                    fallback: '预计剩余时间',
+                    key: 'terminal.detail.estimatedRemainingTime',
                     valueKey: 'ChargingLastTime'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_780108_Copydd780108_Copyf.ConstValue',
-                    fallback: '充电结束时间',
+                    key: 'terminal.detail.chargingEndTime',
                     valueKey: 'ChargingEndTime',
                     offset: true
                 }
@@ -381,52 +361,44 @@ const detailSections = [
         rows: [
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_123557_Copydd123557_Copyf.ConstValue',
-                    fallback: '实际电流',
+                    key: 'terminal.detail.actualCurrent',
                     valueKey: 'AP'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_632675_Copydd632675_Copyf.ConstValue',
-                    fallback: '实际功率',
+                    key: 'terminal.detail.actualPower',
                     valueKey: 'DP',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_258866_Copydd258866_Copyf.ConstValue',
-                    fallback: '平均需求电流',
+                    key: 'terminal.detail.averageDemandCurrent',
                     valueKey: 'AvgAP'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_113155_Copydd113155_Copyf.ConstValue',
-                    fallback: '平均需求功率',
+                    key: 'terminal.detail.averageDemandPower',
                     valueKey: 'AvgDP',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_128287_Copydd128287_Copyf.ConstValue',
-                    fallback: '最大需求电流',
+                    key: 'terminal.detail.maxDemandCurrent',
                     valueKey: 'MaxAP'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_989798_Copydd989798_Copyf.ConstValue',
-                    fallback: '最大需求功率',
+                    key: 'terminal.detail.maxDemandPower',
                     valueKey: 'MaxDP',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_159984_Copydd159984_Copyf.ConstValue',
-                    fallback: '电流满足率',
+                    key: 'terminal.detail.currentSatisfactionRate',
                     valueKey: 'ElectricRate'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_873150_Copydd873150_Copyf.ConstValue',
-                    fallback: '功率满足率',
+                    key: 'terminal.detail.powerSatisfactionRate',
                     valueKey: 'PowerRate',
                     offset: true
                 }
@@ -455,13 +427,13 @@ function confirmStartCharge() {
     loadingStartCharge.value = true;
     if (pile.value.IsSetPileLimitSOC) {
         if (!SingleChargeSOC.value) {
-            Funcs.Notify('消息', '请设置SOC', 'warning');
+            Funcs.Notify(tt('runtime.message'), tt('terminal.setSocPrompt'), 'warning');
             loadingStartCharge.value = false;
             return;
         }
         setChargeSOC().then((res) => {
             if (!res) {
-                Funcs.Confirm('提示', 'SOC设置失败, 是否仍要启动充电?', () => {
+                Funcs.Confirm(tt('runtime.prompt'), tt('terminal.socSetFailedConfirm'), () => {
                     startCharge();
                 }, () => {
                     loadingStartCharge.value = false;
@@ -492,7 +464,7 @@ function setChargeSOC() {
                 return;
             }
             if (errmsg) {
-                Funcs.Notify('消息', errmsg, 'warning');
+                Funcs.Notify(tt('runtime.message'), errmsg, 'warning');
             }
             resolve(false);
         });
@@ -517,13 +489,13 @@ function startCharge() {
     sgApiPost('TPS-startCharging', { filter }).then((result) => {
         const { msg, data: { state, errmsg } } = result;
         if (msg == 'success' && state == '1') {
-            Funcs.Notify('消息', '启动充电成功', 'success');
+            Funcs.Notify(tt('runtime.message'), tt('terminal.startChargingSuccess'), 'success');
             IfShowStartCharge.value = false;
             LocalVars.isDetail = false;
             fireUCEvent('OnFireEvent', 'refresh');
         }
         else {
-            Funcs.Notify('消息', errmsg || '启动充电失败', 'warning');
+            Funcs.Notify(tt('runtime.message'), errmsg || tt('terminal.startChargingFail'), 'warning');
             IfShowStartCharge.value = false;
         }
         loadingStartCharge.value = false;

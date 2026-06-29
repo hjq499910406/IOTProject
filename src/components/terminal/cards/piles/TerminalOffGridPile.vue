@@ -1,9 +1,12 @@
 <template>
     <div>
         <div class="terminal-pile-card" :class="{ 'terminal-pile-card--detail': LocalVars.isDetail }">
+            <div v-if="LocalVars.pile.PileID" class="item-title terminal-pile-card__order-trigger" @click="showOrderCard">
+                <i class="i-link terminal-pile-card__order-text">{{ tt('order.short') }}</i>
+            </div>
             <div class="terminal-pile-card__content">
                 <div>
-                    <span class="terminal-pile-card__badge">离网</span>
+                    <span class="terminal-pile-card__badge">{{ tt('status.offGrid') }}</span>
                     <span class="terminal-pile-card__title">{{ LocalVars.pile.PileName }}</span>
                 </div>
                 <div class="terminal-pile-card__top-row">
@@ -34,14 +37,10 @@
                                     <span class="terminal-pile-card__tag-text">{{ LocalVars.pile.ChargingName }}</span>
                                 </div>
                             </div>
-                            <div v-if="LocalVars.pile.PileID" class="item-title terminal-pile-card__order-trigger"
-                                @click="showOrderCard">
-                                <i class="i-link terminal-pile-card__order-text">订</i>
-                            </div>
                         </div>
                         <div class="terminal-pile-card__summary-row terminal-pile-card__summary-row--danger">
                             <span class="terminal-pile-card__summary-label terminal-pile-card__summary-label--danger">
-                                {{ $t('Schema.Page.UCOffGridTerminals.Controls.fasr_label_e892693_Copy.ConstValue', '离网时长:') }}
+                                {{ tt('terminal.offGridDuration') }}
                             </span>
                             <span class="terminal-pile-card__summary-value">{{ offLengthText }}</span>
                         </div>
@@ -56,7 +55,7 @@
                     <div class="terminal-pile-card__detail-content">
                         <div v-for="detail in detailRows" :key="detail.key" class="terminal-pile-card__detail-row">
                             <span class="terminal-pile-card__field-label terminal-pile-card__field-label--danger">
-                                {{ $t(detail.key, detail.fallback) }}
+                                {{ detail.label }}
                             </span>
                             <span class="terminal-pile-card__field-value">{{ detail.value }}</span>
                         </div>
@@ -79,9 +78,14 @@
     </div>
 </template>
 <script setup>
+
+import { pageText } from '../../../../pages/i18n';
+const tt = pageText;
+
 import { computed } from 'vue';
 import LastChargeOrderDialog from '../../shared/LastChargeOrderDialog.vue';
 import { useLastChargeOrder } from '../../shared/useLastChargeOrder.js';
+
 
 const { TeldProductVersionType } = window;
 const DETAIL_PLACEHOLDER = '--';
@@ -91,13 +95,13 @@ const props = defineProps({
 });
 
 const LocalVars = props.localVars;
-const showOffTimeAlert = computed(() => LocalVars.pile.OffTime && LocalVars.pile.OffTime !== '无');
-const offTimeAlertText = computed(() => `${LocalVars.pile.OffTime} 离网`);
+const showOffTimeAlert = computed(() => LocalVars.pile.OffTime && LocalVars.pile.OffTime !== DETAIL_PLACEHOLDER);
+const offTimeAlertText = computed(() => tt('terminal.offGridAlert').replace('{time}', LocalVars.pile.OffTime || ''));
 const offLengthText = computed(() => LocalVars.pile.OffLength || DETAIL_PLACEHOLDER);
 const detailRows = computed(() => [
     {
         key: 'Schema.Page.UCOffGridTerminals.Controls.fasr_label_e314381_Copy.ConstValue',
-        fallback: '离网时间:',
+        label: tt('terminal.offGridTime'),
         value: LocalVars.pile.OffTime || DETAIL_PLACEHOLDER
     }
 ]);
@@ -184,6 +188,7 @@ const TotalPriceStr = totalPriceText;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    padding-right: 28px;
 }
 
 .terminal-pile-card__badge {
@@ -278,7 +283,6 @@ const TotalPriceStr = totalPriceText;
 }
 
 .terminal-pile-card__meta-row {
-    position: relative;
     display: flex;
     align-items: center;
 }
@@ -390,6 +394,7 @@ const TotalPriceStr = totalPriceText;
     height: 28px;
     border-top-right-radius: 14px;
     border-bottom-left-radius: 50px;
+    z-index: 1;
 }
 
 .terminal-pile-card__order-text {

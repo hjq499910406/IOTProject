@@ -3,7 +3,7 @@
         <div class='terminal-pile-card' :class="cardClass">
             <div class="item-title terminal-pile-card__order-trigger" v-if='LocalVars.pile.PileID'
                 @click="showOrderCard">
-                <i class="i-link terminal-pile-card__order-text">订</i>
+                <i class="i-link terminal-pile-card__order-text">{{ tt('order.short') }}</i>
             </div>
             <div class='terminal-pile-card__content'>
                 <div>
@@ -28,8 +28,7 @@
                                             name='fas dx-icon icon-t-charging-pile01-fill'>
                                         </t-icon>
                                     </div>
-                                    <span class="terminal-pile-card__occupy-text">
-                                        占用 {{ LocalVars.PileData.OccupyTime }}</span>
+                                    <span class="terminal-pile-card__occupy-text">{{ tt('terminal.occupy') }} {{ LocalVars.PileData.OccupyTime }}</span>
                                 </div>
                             </div>
                         </div>
@@ -40,13 +39,10 @@
                                         {{ LocalVars.pile.ChargingName }}
                                     </span>
                                 </div>
-                                <!-- 报文 -->
                             </div>
                         </div>
                         <div class='terminal-pile-card__summary-row'>
-                            <span class="terminal-pile-card__summary-label">{{
-                                $t('Schema.Page.UCOtherTerminal.Controls.fasr_label_322033_Copydd322033_Copyf.ConstValue',
-                                    '最近充电时间:') }}</span>
+                            <span class="terminal-pile-card__summary-label">{{ tt('terminal.recentChargeTime') }}</span>
                             <span class="terminal-pile-card__summary-value">
                                 {{ LocalVars.pile.LastChargeTime }}
                             </span>
@@ -62,7 +58,7 @@
                     <div class='terminal-pile-card__detail-content'>
                         <div class='terminal-pile-card__detail-row'>
                             <span class='terminal-pile-card__field-label'>
-                                {{ $t(primaryDetailRow.key, primaryDetailRow.fallback) }}
+                                {{ tt(primaryDetailRow.key) }}
                             </span>
                             <span class='terminal-pile-card__field-value'>
                                 {{ detailPlaceholder }}
@@ -76,7 +72,7 @@
                                         'terminal-pile-card__field-label',
                                         field.nowrap ? 'terminal-pile-card__field-label--nowrap' : ''
                                     ]">
-                                        {{ $t(field.key, field.fallback) }}
+                                        {{ tt(field.key) }}
                                     </span>
                                     <span class='terminal-pile-card__field-value'>
                                         {{ detailPlaceholder }}
@@ -98,7 +94,7 @@
                                 field.offset ? 'terminal-pile-card__detail-section-cell--offset' : ''
                             ]">
                                 <span class='terminal-pile-card__field-label'>
-                                    {{ $t(field.key, field.fallback) }}
+                                    {{ tt(field.key) }}
                                 </span>
                                 <span class='terminal-pile-card__field-value'>
                                     {{ detailPlaceholder }}
@@ -124,36 +120,36 @@
     </div>
 </template>
 <script setup>
+
+import { pageText } from '../../../../pages/i18n';
+const tt = pageText;
+
 import { computed } from 'vue';
 import LastChargeOrderDialog from '../../shared/LastChargeOrderDialog.vue';
 import { useLastChargeOrder } from '../../shared/useLastChargeOrder.js';
 
+
 const { TeldProductVersionType } = window;
 const detailPlaceholder = '--';
 const primaryDetailRow = {
-    key: 'Schema.Page.UCChargingTerminal.Controls.fasr_label_e314381_Copy.ConstValue',
-    fallback: '客户名称'
+    key: 'terminal.detail.customerName'
 };
 const primaryDetailColumns = [
     [
         {
-            key: 'Schema.Page.UCChargingTerminal.Controls.fasr_label_e719153_Copy.ConstValue',
-            fallback: '充电开始时间',
+            key: 'terminal.detail.chargingStartTime',
             nowrap: true
         },
         {
-            key: 'Schema.Page.UCChargingTerminal.Controls.fasr_label_e351115_Copy.ConstValue',
-            fallback: '已充时长'
+            key: 'terminal.detail.chargedDuration'
         }
     ],
     [
         {
-            key: 'Schema.Page.UCChargingTerminal.Controls.fasr_label_e966623_Copy.ConstValue',
-            fallback: '充电费用'
+            key: 'terminal.detail.chargingFee'
         },
         {
-            key: 'Schema.Page.UCChargingTerminal.Controls.fasr_label_e848877_Copy.ConstValue',
-            fallback: '充电量'
+            key: 'terminal.chargeAmount'
         }
     ]
 ];
@@ -164,41 +160,34 @@ const detailSections = [
         rows: [
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_7dd81f.ConstValue',
-                    fallback: '判定车系'
+                    key: 'terminal.detail.carSeries'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_247335_Copydd247335_Copyf.ConstValue',
-                    fallback: '车牌号',
+                    key: 'terminal.detail.licensePlate',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_386241_Copydd386241_Copyf.ConstValue',
-                    fallback: '车架号',
+                    key: 'terminal.detail.vin',
                     full: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_695984_Copydd695984_Copyf.ConstValue',
-                    fallback: '车辆自编号'
+                    key: 'terminal.detail.vehicleCode'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_384687_Copydd384687_Copyf.ConstValue',
-                    fallback: '路线',
+                    key: 'terminal.detail.route',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_779803_Copydd779803_Copyf.ConstValue',
-                    fallback: '电池最高温度'
+                    key: 'terminal.detail.maxBatteryTemperature'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_955825_Copydd955825_Copyf.ConstValue',
-                    fallback: '电池最低温度',
+                    key: 'terminal.detail.minBatteryTemperature',
                     offset: true
                 }
             ]
@@ -210,34 +199,28 @@ const detailSections = [
         rows: [
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_796168_Copydd796168_Copyf.ConstValue',
-                    fallback: '插枪时间'
+                    key: 'terminal.detail.gunInsertionTime'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_775321_Copydd775321_Copyf.ConstValue',
-                    fallback: '启动方式',
+                    key: 'terminal.detail.chargeStartMethod',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_424176_Copydd424176_Copyf.ConstValue',
-                    fallback: '充电入口'
+                    key: 'terminal.detail.chargeEntry'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_360184_Copydd360184_Copyf.ConstValue',
-                    fallback: '初始SOC',
+                    key: 'terminal.detail.initialSoc',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_125853_Copydd125853_Copyf.ConstValue',
-                    fallback: '预计剩余时间'
+                    key: 'terminal.detail.estimatedRemainingTime'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_780108_Copydd780108_Copyf.ConstValue',
-                    fallback: '充电结束时间',
+                    key: 'terminal.detail.chargingEndTime',
                     offset: true
                 }
             ]
@@ -249,45 +232,37 @@ const detailSections = [
         rows: [
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_123557_Copydd123557_Copyf.ConstValue',
-                    fallback: '实际电流'
+                    key: 'terminal.detail.actualCurrent'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_632675_Copydd632675_Copyf.ConstValue',
-                    fallback: '实际功率',
+                    key: 'terminal.detail.actualPower',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_258866_Copydd258866_Copyf.ConstValue',
-                    fallback: '平均需求电流'
+                    key: 'terminal.detail.averageDemandCurrent'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_113155_Copydd113155_Copyf.ConstValue',
-                    fallback: '平均需求功率',
+                    key: 'terminal.detail.averageDemandPower',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_128287_Copydd128287_Copyf.ConstValue',
-                    fallback: '最大需求电流'
+                    key: 'terminal.detail.maxDemandCurrent'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_989798_Copydd989798_Copyf.ConstValue',
-                    fallback: '最大需求功率',
+                    key: 'terminal.detail.maxDemandPower',
                     offset: true
                 }
             ],
             [
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_159984_Copydd159984_Copyf.ConstValue',
-                    fallback: '电流满足率'
+                    key: 'terminal.detail.currentSatisfactionRate'
                 },
                 {
-                    key: 'Schema.Page.UCOtherTerminal.Controls.fasr_label_873150_Copydd873150_Copyf.ConstValue',
-                    fallback: '功率满足率',
+                    key: 'terminal.detail.powerSatisfactionRate',
                     offset: true
                 }
             ]
@@ -310,7 +285,7 @@ function getDetailValue(value) {
     return value;
 }
 const isOtherVariant = computed(() => props.variant === 'other');
-const statusLabel = computed(() => (isOtherVariant.value ? '其他' : '空闲'));
+const statusLabel = computed(() => (isOtherVariant.value ? tt('terminal.other') : tt('terminal.free')));
 const statusBadgeClass = computed(() => [
     'terminal-pile-card__badge',
     isOtherVariant.value ? 'terminal-pile-card__badge--other' : 'terminal-pile-card__badge--free'

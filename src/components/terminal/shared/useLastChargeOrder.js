@@ -1,10 +1,12 @@
 import { computed, reactive, ref } from 'vue';
+import { pageText } from '../../../pages/i18n';
+const tt = pageText;
 
 const orderCardColumns = [
-    { name: 'sd', label: '时段', field: 'sd', align: 'left' },
-    { name: 'dfdj', label: '电费单价（元/度）', field: 'dfdj' },
-    { name: 'fwfdj', label: '服务费单价（元/度）', field: 'fwfdj' },
-    { name: 'dl', label: '电量（元/度）', field: 'dl' }
+    { name: 'sd', label: tt('order.timePeriod'), field: 'sd', align: 'left' },
+    { name: 'dfdj', label: tt('order.electricityUnitPrice'), field: 'dfdj' },
+    { name: 'fwfdj', label: tt('order.serviceUnitPrice'), field: 'fwfdj' },
+    { name: 'dl', label: tt('order.chargeAmount'), field: 'dl' }
 ];
 
 function sgApiPost(sid, param) {
@@ -32,7 +34,10 @@ export function useLastChargeOrder(getPile) {
         const { ECTaxInFee_Str = 0, SCTaxInFee_Str = 0 } = orderCardInfo;
         const ecTotal = Number.parseFloat(ECTaxInFee_Str) || 0;
         const scTotal = Number.parseFloat(SCTaxInFee_Str) || 0;
-        return `${ECTaxInFee_Str}(电费)+${SCTaxInFee_Str}(服务费)=${(ecTotal + scTotal).toFixed(2)}`;
+        return tt('order.totalPriceSummary')
+            .replace('{electricity}', ECTaxInFee_Str)
+            .replace('{service}', SCTaxInFee_Str)
+            .replace('{total}', (ecTotal + scTotal).toFixed(2));
     });
     const orderCardTableData = computed(() => {
         const { ChargeBillDetailList = [] } = orderCardInfo;
@@ -50,7 +55,8 @@ export function useLastChargeOrder(getPile) {
             return;
         }
 
-        orderCardTitle.value = `上次充电订单（${pile.PileName || ''}）`;
+        orderCardTitle.value = tt('order.lastChargeTitle')
+            .replace('{name}', pile.PileName || '');
         const filter = {
             PillID: pile.PileID,
             CustomerID: pile.CustomerID
@@ -60,7 +66,11 @@ export function useLastChargeOrder(getPile) {
             const { msg, data: { state, data } } = result;
             if (msg === 'success' && state === '1' && data) {
                 if (data.IsNull === '1') {
-                    Funcs.Notify('消息', '无上次充电订单记录', 'warning');
+                    Funcs.Notify(
+                        tt('runtime.message'),
+                        tt('order.noLastChargeOrderRecord'),
+                        'warning'
+                    );
                     return;
                 }
 
@@ -70,7 +80,11 @@ export function useLastChargeOrder(getPile) {
                 return;
             }
 
-            Funcs.Notify('消息', msg || '查看上次充电订单异常', 'warning');
+            Funcs.Notify(
+                tt('runtime.message'),
+                msg || tt('order.lastChargeOrderError'),
+                'warning'
+            );
         });
     }
 

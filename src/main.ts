@@ -9,19 +9,10 @@ import App from './App.vue';
 import router from './router';
 import { createI18n }  from 'vue-i18n';
 import * as VueI18n from 'vue-i18n';
+import { getRuntimeLocale } from './pages/i18n';
 window.VueI18n = VueI18n;
 const resourceURL = window.TeldWebConfig.ResourceURL;
-let teldLocale = TFF.common.storage.Cookie.read('teld_locale');
-if(!teldLocale){
-  teldLocale = TFF.common.storage.Cookie.read('wrp_locale');
-}
-if(!teldLocale && navigator.language){ 
-  teldLocale = navigator.language;
-}
-
-if(!teldLocale){
-  teldLocale = 'zh-CN';
-}
+const teldLocale = getRuntimeLocale();
 
 const app = vue.createApp(App);
 

@@ -6,7 +6,7 @@
             <i class="icon-t-left-outlined"
                @click='backIconBtn()'>
             </i>
-            {{ IsDispatchMonitor ? '监控调度' : '设备监控' }}
+            {{ IsDispatchMonitor ? tt('runtime.monitorDispatch', '监控调度') : tt('runtime.deviceMonitor', '设备监控') }}
         </div>
         <div :ref='el => Widget["LayoutGrid_1c95c5"] = el'
              style='display:flex;align-items: center; '
@@ -32,14 +32,14 @@
                              :ref='el => Widget["fasr_select_helper_1ce26a"] = el'
                              style='max-width: 480px;'
                              :class="['fasr_select_helper_1ce26a', 'tr-input-form', !IsPC ? 'tr-input-noborder tr-select-triangleicon' : '']"
-                             label='下拉帮助'
+                             :label="tt('common.dropdownHelp', '下拉帮助')"
                              instanceCode='fasr_select_helper_1ce26a'
                              :hideLabel='true'
                              :searchEnable='true'
                              searchPosition='top'
                              icon='arrow'
                              :simple='false'
-                             defaultDisplayValue='请选择'
+                             :defaultDisplayValue="tt('common.pleaseSelect', '请选择')"
                              dropDownWidthStatic='100%'
                              :historyEnable='false'
                              :historySaveCount='3'
@@ -336,7 +336,7 @@
                      responsive='pc-mobile-gear'>
                     <t-button style='margin-right: 8px;'
                               class='tr-button-default'
-                              label='手动刷新'
+                              :label="tt('common.manualRefresh', '手动刷新')"
                               :showHint='true'
                               :tabIndex='1'
                               @click="handleManualRefresh">
@@ -356,14 +356,7 @@
                                   :tabIndex='1'
                                   :disable='false'
                                   :visible='true'
-                                  :staticItems='[
-                                { "label": "刷新频率30秒", "value": 30 },
-                                { "label": "刷新频率45秒", "value": 45 },
-                                { "label": "刷新频率60秒", "value": 60 },
-                                { "label": "刷新频率75秒", "value": 75 },
-                                { "label": "刷新频率90秒", "value": 90 },
-                                { "label": "刷新频率120秒", "value": 120 },
-                            ]'
+                                  :staticItems='refreshFrequencyOptions'
                                   v-model="selectModel">
                         </t-select>
                         <!-- 进度条 -->
@@ -406,14 +399,14 @@
                              valueType='static'
                              :showHint='true'
                              :tabIndex='1'
-                             constValue='设备状态'>
+                             :constValue="tt('device.status', '设备状态')">
                     </t-label>
                     <span class="status-btn"
                           :class="{ active: photoSelectedStates.online }"
-                          @click="() => selectPhotoState('online')">在线 {{ photoNumObj.OnlineDeviceCount }}</span>
+                          @click="() => selectPhotoState('online')">{{ tt('runtime.online', '在线') }} {{ photoNumObj.OnlineDeviceCount }}</span>
                     <span class="status-btn"
                           :class="{ active: photoSelectedStates.offline }"
-                          @click="() => selectPhotoState('offline')">离线 {{ photoNumObj.OfflineDeviceCount
+                          @click="() => selectPhotoState('offline')">{{ tt('runtime.offline', '离线') }} {{ photoNumObj.OfflineDeviceCount
                         }}</span>
                 </div>
             </t-tab-panel>
@@ -431,14 +424,14 @@
                              valueType='static'
                              :showHint='true'
                              :tabIndex='1'
-                             constValue='设备状态'>
+                             :constValue="tt('device.status', '设备状态')">
                     </t-label>
                     <span class="status-btn"
                           :class="{ active: lockSelectedStates.online }"
-                          @click="() => selectLockState('online')">在线 {{ lockNumObj.OnlineDeviceCount }}</span>
+                          @click="() => selectLockState('online')">{{ tt('runtime.online', '在线') }} {{ lockNumObj.OnlineDeviceCount }}</span>
                     <span class="status-btn"
                           :class="{ active: lockSelectedStates.offline }"
-                          @click="() => selectLockState('offline')">离线 {{ lockNumObj.OfflineDeviceCount }}</span>
+                          @click="() => selectLockState('offline')">{{ tt('runtime.offline', '离线') }} {{ lockNumObj.OfflineDeviceCount }}</span>
                 </div>
                 <div class="filter-item">
                     <t-label :ref='el => Widget["fasr_label_540f81"] = el'
@@ -448,20 +441,20 @@
                              valueType='static'
                              :showHint='true'
                              :tabIndex='1'
-                             constValue='地锁状态'>
+                             :constValue="tt('lock.status', '地锁状态')">
                     </t-label>
                     <span class="status-btn"
                           :class="{ active: lockSelectedStates.raised }"
                           @click="() => selectLockState('raised')">
-                        锁升起 {{ lockNumObj.LockedDeviceCount }}</span>
+                        {{ tt('runtime.lockRaised', '锁升起') }} {{ lockNumObj.LockedDeviceCount }}</span>
                     <span class="status-btn"
                           :class="{ active: lockSelectedStates.lowered }"
                           @click="() => selectLockState('lowered')">
-                        锁降下 {{ lockNumObj.UnlockedDeviceCount }}</span>
+                        {{ tt('runtime.lockLowered', '锁降下') }} {{ lockNumObj.UnlockedDeviceCount }}</span>
                     <span class="status-btn"
                           :class="{ active: lockSelectedStates.unknown }"
                           @click="() => selectLockState('unknown')">
-                        未知 {{ lockNumObj.UnknownLockDeviceCount }}</span>
+                        {{ tt('runtime.unknown', '未知') }} {{ lockNumObj.UnknownLockDeviceCount }}</span>
                 </div>
             </t-tab-panel>
             <!-- 光伏监控 -->
@@ -475,19 +468,19 @@
                              valueType='static'
                              :showHint='true'
                              :tabIndex='1'
-                             constValue='设备状态'>
+                             :constValue="tt('device.status', '设备状态')">
                     </t-label>
                     <span class="status-btn"
                           :class="{ active: pvSelectedStates.online }"
-                          @click="() => selectPvState('online')">在线 {{ pvMonitorNumObj.OnlineDeviceCount
+                          @click="() => selectPvState('online')">{{ tt('runtime.online', '在线') }} {{ pvMonitorNumObj.OnlineDeviceCount
                         }}</span>
                     <span class="status-btn"
                           :class="{ active: pvSelectedStates.offline }"
-                          @click="() => selectPvState('offline')">离线 {{ pvMonitorNumObj.OfflineDeviceCount
+                          @click="() => selectPvState('offline')">{{ tt('runtime.offline', '离线') }} {{ pvMonitorNumObj.OfflineDeviceCount
                         }}</span>
                     <span class="status-btn"
                           :class="{ active: pvSelectedStates.fault }"
-                          @click="() => selectPvState('fault')">故障 {{ pvMonitorNumObj.FaultDeviceCount }}</span>
+                          @click="() => selectPvState('fault')">{{ tt('status.fault', '故障') }} {{ pvMonitorNumObj.FaultDeviceCount }}</span>
                 </div>
                 <div class="filter-item">
                     <t-label :ref='el => Widget["fasr_label_540f81"] = el'
@@ -497,20 +490,20 @@
                              valueType='static'
                              :showHint='true'
                              :tabIndex='1'
-                             constValue='光伏工作状态'>
+                             :constValue="tt('pv.workStatus', '光伏工作状态')">
                     </t-label>
                     <span class="status-btn"
                           :class="{ active: pvSelectedStates.generating }"
                           @click="() => selectPvState('generating')">
-                        发电中 {{ pvMonitorNumObj.GeneratingDeviceCount }}</span>
+                        {{ tt('runtime.generating', '发电中') }} {{ pvMonitorNumObj.GeneratingDeviceCount }}</span>
                     <span class="status-btn"
                           :class="{ active: pvSelectedStates.sleeping }"
                           @click="() => selectPvState('sleeping')">
-                        休眠 {{ pvMonitorNumObj.SleepingDeviceCount }}</span>
+                        {{ tt('runtime.sleep', '休眠') }} {{ pvMonitorNumObj.SleepingDeviceCount }}</span>
                     <span class="status-btn"
                           :class="{ active: pvSelectedStates.unknown }"
                           @click="() => selectPvState('unknown')">
-                        未知 {{ pvMonitorNumObj.UnknownDeviceCount }}</span>
+                        {{ tt('runtime.unknown', '未知') }} {{ pvMonitorNumObj.UnknownDeviceCount }}</span>
                 </div>
             </t-tab-panel>
             <!-- 储能监控 -->
@@ -524,19 +517,19 @@
                              valueType='static'
                              :showHint='true'
                              :tabIndex='1'
-                             constValue='设备状态'>
+                             :constValue="tt('device.status', '设备状态')">
                     </t-label>
                     <span class="status-btn"
                           :class="{ active: energySelectedStates.online }"
-                          @click="() => selectEnergyState('online')">在线 {{ energyMonitorNumObj.OnlineDeviceCount
+                          @click="() => selectEnergyState('online')">{{ tt('runtime.online', '在线') }} {{ energyMonitorNumObj.OnlineDeviceCount
                         }}</span>
                     <span class="status-btn"
                           :class="{ active: energySelectedStates.offline }"
-                          @click="() => selectEnergyState('offline')">离线 {{
+                          @click="() => selectEnergyState('offline')">{{ tt('runtime.offline', '离线') }} {{
                             energyMonitorNumObj.OfflineDeviceCount }}</span>
                     <span class="status-btn"
                           :class="{ active: energySelectedStates.fault }"
-                          @click="() => selectEnergyState('fault')">故障 {{ energyMonitorNumObj.FaultDeviceCount
+                          @click="() => selectEnergyState('fault')">{{ tt('status.fault', '故障') }} {{ energyMonitorNumObj.FaultDeviceCount
                         }}</span>
                 </div>
                 <div class="filter-item">
@@ -547,24 +540,24 @@
                              valueType='static'
                              :showHint='true'
                              :tabIndex='1'
-                             constValue='储能工作状态'>
+                             :constValue="tt('energy.workStatus', '储能工作状态')">
                     </t-label>
                     <span class="status-btn"
                           :class="{ active: energySelectedStates.charging }"
                           @click="() => selectEnergyState('charging')">
-                        充电中 {{ energyMonitorNumObj.ChargingDeviceCount }}</span>
+                        {{ tt('runtime.chargingState', '充电中') }} {{ energyMonitorNumObj.ChargingDeviceCount }}</span>
                     <span class="status-btn"
                           :class="{ active: energySelectedStates.discharging }"
                           @click="() => selectEnergyState('discharging')">
-                        放电中 {{ energyMonitorNumObj.DischargingDeviceCount }}</span>
+                        {{ tt('runtime.dischargingState', '放电中') }} {{ energyMonitorNumObj.DischargingDeviceCount }}</span>
                     <span class="status-btn"
                           :class="{ active: energySelectedStates.sleeping }"
                           @click="() => selectEnergyState('sleeping')">
-                        休眠 {{ energyMonitorNumObj.SleepingDeviceCount }}</span>
+                        {{ tt('runtime.sleep', '休眠') }} {{ energyMonitorNumObj.SleepingDeviceCount }}</span>
                     <span class="status-btn"
                           :class="{ active: energySelectedStates.unknown }"
                           @click="() => selectEnergyState('unknown')">
-                        未知 {{ energyMonitorNumObj.UnknownDeviceCount }}</span>
+                        {{ tt('runtime.unknown', '未知') }} {{ energyMonitorNumObj.UnknownDeviceCount }}</span>
                 </div>
             </t-tab-panel>
             <!-- 车库消防 -->
@@ -580,14 +573,14 @@
                              valueType='static'
                              :showHint='true'
                              :tabIndex='1'
-                             constValue='设备状态'>
+                             :constValue="tt('device.status', '设备状态')">
                     </t-label>
                     <span class="status-btn"
                           :class="{ active: fireSelectedStates.online }"
-                          @click="() => selectFireState('online')">在线 {{ fireNumObj.OnlineModuleCount }}</span>
+                          @click="() => selectFireState('online')">{{ tt('runtime.online', '在线') }} {{ fireNumObj.OnlineModuleCount }}</span>
                     <span class="status-btn"
                           :class="{ active: fireSelectedStates.offline }"
-                          @click="() => selectFireState('offline')">离线 {{ fireNumObj.OfflineModuleCount }}</span>
+                          @click="() => selectFireState('offline')">{{ tt('runtime.offline', '离线') }} {{ fireNumObj.OfflineModuleCount }}</span>
                 </div>
             </t-tab-panel>
         </t-tabs>
@@ -644,7 +637,7 @@
             <!-- 详情面板 -->
             <div class="detail-panel">
                 <div class="detail-header">
-                    <h3 class="detail-title">设备详情</h3>
+                    <h3 class="detail-title">{{ tt('device.detail', '设备详情') }}</h3>
                     <button class="close-btn"
                             @click="closeDetail">×</button>
                 </div>
@@ -656,57 +649,57 @@
                               :class="{ online: isOnline, offline: isOffline, unknown: !isOnline && !isOffline }">
                             {{ NetState[currentDetail.NetState] }}
                         </span>
-                        <span class="device-name">{{ currentDetail.DeviceName || '未知设备' }}</span>
+                        <span class="device-name">{{ currentDetail.DeviceName || tt('runtime.unknownDevice', '未知设备') }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '设备编号' }}：</strong>
+                        <strong>{{ tt('runtime.deviceCode', '设备编号') }}：</strong>
                         <span :title="currentDetail.DeviceKey">{{ currentDetail.DeviceKey }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '设备类型' }}：</strong>
+                        <strong>{{ tt('device.type', '设备类型') }}：</strong>
                         <span :title="DeviceType[currentDetail.DeviceType]">{{ DeviceType[currentDetail.DeviceType]
                             }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '统一编码' }}：</strong>
+                        <strong>{{ tt('device.unifiedCode', '统一编码') }}：</strong>
                         <span :title="currentDetail.UnifiedId">{{ currentDetail.UnifiedId || '--' }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '国标设备名称' }}：</strong>
+                        <strong>{{ tt('device.nationalDeviceName', '国标设备名称') }}：</strong>
                         <span :title="currentDetail.GbDeviceName">{{ currentDetail.GbDeviceName || '--' }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '设备制造商' }}：</strong>
+                        <strong>{{ tt('device.manufacturer', '设备制造商') }}：</strong>
                         <span :title="currentDetail.Manufacturer">{{ currentDetail.Manufacturer || '--' }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '设备型号' }}：</strong>
+                        <strong>{{ tt('device.model', '设备型号') }}：</strong>
                         <span :title="currentDetail.Model">{{ currentDetail.Model || '--' }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '父级设备' }}：</strong>
+                        <strong>{{ tt('device.parentDevice', '父级设备') }}：</strong>
                         <span :title="currentDetail.ParentID">{{ currentDetail.ParentID || '--' }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '网络地址' }}：</strong>
+                        <strong>{{ tt('device.networkAddress', '网络地址') }}：</strong>
                         <span :title="currentDetail.HostAddress">{{ currentDetail.HostAddress || '--' }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '本地IP' }}：</strong>
+                        <strong>{{ tt('device.localIp', '本地IP') }}：</strong>
                         <span :title="currentDetail.LocalIp">{{ currentDetail.LocalIp || '--' }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '流传输模式' }}：</strong>
+                        <strong>{{ tt('video.streamTransportMode', '流传输模式') }}：</strong>
                         <span :title="StreamTransport[currentDetail.StreamTransport]">{{
                             StreamTransport[currentDetail.StreamTransport] || '--' }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '信令传输模式' }}：</strong>
+                        <strong>{{ tt('runtime.signalingMode', '信令传输模式') }}：</strong>
                         <span :title="SignalTransport[currentDetail.SignalTransport]">{{
                             SignalTransport[currentDetail.SignalTransport] || '--' }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '最近抓拍图片地址' }}：</strong>
+                        <strong>{{ tt('runtime.latestSnapshotUrl', '最近抓拍图片地址') }}：</strong>
                         <span :title="currentDetail.LastSnapshot">
                             <t-icon style='margin-right: 2px;cursor: pointer;'
                                     class='fasr_icon_95d59d tr-icon-default'
@@ -718,11 +711,11 @@
                             </t-icon>{{ currentDetail.LastSnapshot || '--' }}</span>
                     </div>
                     <div class="detail-row detail-row-split">
-                        <strong>{{ '设备上线时间' }}：</strong>
+                        <strong>{{ tt('runtime.deviceOnlineTime', '设备上线时间') }}：</strong>
                         <span :title="currentDetail.OnlineTime">{{ currentDetail.OnlineTime || '--' }}</span>
                     </div>
                     <div class="detail-row">
-                        <strong>{{ '设备下线时间' }}：</strong>
+                        <strong>{{ tt('runtime.deviceOfflineTime', '设备下线时间') }}：</strong>
                         <span :title="currentDetail.OfflineTime">{{ currentDetail.OfflineTime || '--' }}</span>
                     </div>
                 </div>
@@ -739,7 +732,7 @@
                  @click="closeVideo"></div>
             <div class="replay-modal">
                 <div class="detail-header">
-                    <h3>{{ '实时画面' }}</h3>
+                    <h3>{{ tt('video.liveView', '实时画面') }}</h3>
                     <button class="close-btn"
                             @click="closeVideo">×</button>
                 </div>
@@ -764,10 +757,15 @@
 
 <style>
 @import './monitor.css';
+
 </style>
 
 
 <script setup>
+
+
+import { pageText } from '../i18n';
+const tt = pageText;
 import { ref, onBeforeMount, onMounted, computed, onUnmounted, reactive, nextTick, watch, provide, } from 'vue';
 import { DataQueryClass } from '../../fas/models/DataQueryClass';
 import { DataQueryClassAsync } from '../../fas/models/DataQueryClassAsync';
@@ -789,6 +787,11 @@ provide('IsPC', IsPC);
 const updateIsPC = () => {
   IsPC.value = window.innerWidth >= 768;
 };
+
+const refreshFrequencyOptions = [30, 45, 60, 75, 90, 120].map((value) => ({
+  label: `${ tt('toolbar.refreshFrequencyPrefix', '刷新频率') }${ value }${ tt('toolbar.seconds', '秒') }`,
+  value
+}));
 
 const hasPVMProduct = async () => {
   if (hasPVMProductResult != null) {
@@ -833,19 +836,19 @@ const checkPVMPermission = async () => {
 const tabItems = computed(() => {
   const items = [];
   if (IsDispatchMonitor.value) {
-    items.push({ label: '充电终端', code: 'terminal' });
+    items.push({ label: tt('runtime.chargeTerminal', '充电终端'), code: 'terminal' });
     if (canShowPVMTabs.value) {
-      items.push({ label: '光伏监控', code: 'pvMonitor' });
-      items.push({ label: '储能监控', code: 'energyMonitor' });
+      items.push({ label: tt('runtime.pvMonitor', '光伏监控'), code: 'pvMonitor' });
+      items.push({ label: tt('runtime.energyMonitor', '储能监控'), code: 'energyMonitor' });
     }
     return items;
   }
-  items.push({ label: '摄像头监控', code: 'photoMonitor' });
-  items.push({ label: '智能地锁监控', code: 'lockMonitor' });
+  items.push({ label: tt('runtime.photoMonitor', '摄像头监控'), code: 'photoMonitor' });
+  items.push({ label: tt('runtime.lockMonitor', '智能地锁监控'), code: 'lockMonitor' });
   //   items.push({ label: '车库消防', code: 'fireMonitor' });
   if (canShowPVMTabs.value) {
-    items.push({ label: '光伏监控', code: 'pvMonitor' });
-    items.push({ label: '储能监控', code: 'energyMonitor' });
+    items.push({ label: tt('runtime.pvMonitor', '光伏监控'), code: 'pvMonitor' });
+    items.push({ label: tt('runtime.energyMonitor', '储能监控'), code: 'energyMonitor' });
   }
   return items;
 });
@@ -864,15 +867,15 @@ const updateTabLabel = (key, label, count) => {
   }
 };
 const updateTerminalTab = (count) => {
-  updateTabLabel('terminal', '充电终端', count);
+  updateTabLabel('terminal', tt('runtime.chargeTerminal', '充电终端'), count);
 };
 
 // 设备详情面板
 const Funcs = window.Funcs;
 const NetState = {
-  0: '初始',
-  1: '在线',
-  2: '离线',
+  0: tt('runtime.initial', '初始'),
+  1: tt('runtime.online', '在线'),
+  2: tt('runtime.offline', '离线'),
 };
 const DeviceType = {
   118: 'NVR',
@@ -884,8 +887,8 @@ const SignalTransport = {
 };
 const StreamTransport = {
   1: 'Udp',
-  2: 'Tcp-主动',
-  3: 'Tcp-被动'
+  2: tt('runtime.tcpActive', 'Tcp-主动'),
+  3: tt('runtime.tcpPassive', 'Tcp-被动')
 };
 const Widget = {
   LayoutGrid_1c95c5: null,
@@ -1117,7 +1120,7 @@ onMounted(async () => {
     await loadFirstStation();
   }
   if (!stationID.value) {
-    Funcs.Notify('提示', '请先选择电站', 'error');
+    Funcs.Notify(tt('runtime.prompt', '提示'), tt('runtime.selectStationFirst', '请先选择电站'), 'error');
     return;
   }
 
@@ -1194,7 +1197,7 @@ const getPhotoMonitorData = () => {
     data: { request: JSON.stringify(postData) }
   }).then(async (result) => {
     if (result.state == 0) {
-      Funcs.Notify('提示', result.errmsg, 'error');
+      Funcs.Notify(tt('runtime.prompt', '提示'), result.errmsg, 'error');
       return;
     }
 
@@ -1212,12 +1215,12 @@ const getPhotoMonitorData = () => {
     badgeNumPhoto.value = originalPhotoList.value.length;
     const photoTabIndex = getTabIndex('photo');
     if (photoTabIndex !== undefined && Widget.fasr_tabs_494f6b?.staticItems?.[ photoTabIndex ]) {
-      Widget.fasr_tabs_494f6b.staticItems[ photoTabIndex ].label = badgeNumPhoto.value ? `摄像头监控（${ badgeNumPhoto.value }）` : '摄像头监控';
+      Widget.fasr_tabs_494f6b.staticItems[ photoTabIndex ].label = badgeNumPhoto.value ? `${ tt('runtime.photoMonitor', '摄像头监控') }（${ badgeNumPhoto.value }）` : tt('runtime.photoMonitor', '摄像头监控');
     }
     refreshPhotoState();
   }).catch((error) => {
     if (tabIndex.value == 0) {
-      Funcs.Notify('提示', '摄像头监控暂无数据', 'error');
+      Funcs.Notify(tt('runtime.prompt', '提示'), `${ tt('runtime.photoMonitor', '摄像头监控') }${ tt('value.emptyData', '暂无数据') }`, 'error');
     }
   });
 };
@@ -1233,7 +1236,7 @@ const getLockMonitorPanelData = () => {
     data: { request: JSON.stringify(postData) }
   }).then(async (result) => {
     if (result.state == 0) {
-      Funcs.Notify('提示', result.errmsg, 'error');
+      Funcs.Notify(tt('runtime.prompt', '提示'), result.errmsg, 'error');
       return;
     }
     const resultData = result.data.ReturnValue;
@@ -1248,7 +1251,7 @@ const getLockMonitorPanelData = () => {
     }
   }).catch((error) => {
     if (tabIndex.value == 1) {
-      Funcs.Notify('提示', '地锁监控暂无数据', 'error');
+      Funcs.Notify(tt('runtime.prompt', '提示'), `${ tt('runtime.lockMonitor', '智能地锁监控') }${ tt('value.emptyData', '暂无数据') }`, 'error');
     }
   });
 };
@@ -1263,7 +1266,7 @@ const getFireMonitorData = () => {
     data: { request: JSON.stringify(postData) }
   }).then(async (result) => {
     if (result.state == 0) {
-      Funcs.Notify('提示', result.errmsg, 'error');
+      Funcs.Notify(tt('runtime.prompt', '提示'), result.errmsg, 'error');
       return;
     }
     const resultData = result.data.ReturnValue;
@@ -1272,10 +1275,10 @@ const getFireMonitorData = () => {
     fireNumObj.value = resultData.Statistics;
 
     badgeNumFire.value = resultData.Statistics.OnlineModuleCount + resultData.Statistics.OfflineModuleCount;
-    Widget.fasr_tabs_494f6b.staticItems[ 4 ].label = badgeNumFire.value ? `消防监控（${ badgeNumFire.value }）` : '消防监控';
+    Widget.fasr_tabs_494f6b.staticItems[ 4 ].label = badgeNumFire.value ? `${ tt('runtime.fireMonitor', '消防监控') }（${ badgeNumFire.value }）` : tt('runtime.fireMonitor', '消防监控');
   }).catch((error) => {
     if (tabIndex.value == 1) {
-      Funcs.Notify('提示', '消防监控暂无数据', 'error');
+      Funcs.Notify(tt('runtime.prompt', '提示'), `${ tt('runtime.fireMonitor', '消防监控') }${ tt('value.emptyData', '暂无数据') }`, 'error');
     }
   });
 };
@@ -1365,7 +1368,7 @@ const getPvANDEnergyMonitorData = () => {
     data: { request: JSON.stringify(postData) }
   }).then(async (result) => {
     if (!result.data.ResultState) {
-      Funcs.Notify('提示', result.data.ErrorMessage, 'error');
+      Funcs.Notify(tt('runtime.prompt', '提示'), result.data.ErrorMessage, 'error');
       return;
     }
     const resultList = result.data.ReturnValue || [];
@@ -1394,7 +1397,7 @@ const getPvANDEnergyMonitorData = () => {
     pvMonitorNumObj.value = pvCount;
     originalPvList.value = PvData;
     const pvBadgeNum = PvData.length;
-    updateTabLabel('pv', '光伏监控', pvBadgeNum);
+    updateTabLabel('pv', tt('runtime.pvMonitor', '光伏监控'), pvBadgeNum);
 
     const energyCount = {
       OnlineDeviceCount: 0,
@@ -1422,7 +1425,7 @@ const getPvANDEnergyMonitorData = () => {
     refreshPvState();
     refreshEnergyState();
     const energyBadgeNum = EnergyData.length;
-    updateTabLabel('energy', '储能监控', energyBadgeNum);
+    updateTabLabel('energy', tt('runtime.energyMonitor', '储能监控'), energyBadgeNum);
 
   }).catch((error) => {
     console.error('获取光伏储能监控数据失败：' + error);
@@ -1786,7 +1789,7 @@ const currentReplayDevice = ref(null);
 const replayTimeRange = ref([]);
 const openReplay = async (device) => {
   if (device.NetState != 1) {
-    Funcs.Notify('提示', '设备离线，无法回放视频', 'error');
+    Funcs.Notify(tt('runtime.prompt', '提示'), tt('runtime.playbackUnavailableOffline', '设备离线，无法回放视频'), 'error');
     return;
   }
 
@@ -1807,14 +1810,14 @@ const openReplay = async (device) => {
     data: { request: JSON.stringify(postData) }
   });
   if (result.state == 0) {
-    Funcs.Notify('提示', result.errmsg, 'error');
+    Funcs.Notify(tt('runtime.prompt', '提示'), result.errmsg, 'error');
 
   }
   else {
     if (result?.data?.OutputParams.length > 0) {
       const recordList = result?.data?.OutputParams.find(item => item.Name === 'RecordList')?.Value || [];
       if (recordList.length == 0) {
-        Funcs.Notify('提示', '暂无可回放视频', 'error');
+        Funcs.Notify(tt('runtime.prompt', '提示'), tt('runtime.noPlaybackVideo', '暂无可回放视频'), 'error');
         return;
       }
       replayTimeRange.value = recordList.map(item => {
@@ -1836,7 +1839,7 @@ const videoVisible = ref(false);
 const currentVideoDevice = ref(null);
 const openVideoModal = (device) => {
   if (device.NetState != 1) {
-    Funcs.Notify('提示', '设备离线，无法观看实时画面', 'error');
+    Funcs.Notify(tt('runtime.prompt', '提示'), tt('runtime.liveUnavailableOffline', '设备离线，无法观看实时画面'), 'error');
     return;
   }
   currentVideoDevice.value = device;
@@ -1881,7 +1884,7 @@ const handleManualRefresh = () => {
     getALLData();
   }
   else {
-    Funcs.Notify('提示', '请先选择场站', 'error');
+    Funcs.Notify(tt('runtime.prompt', '提示'), tt('runtime.selectStationFirst', '请先选择电站'), 'error');
   }
   isPaused = false;
   resetProgress();
@@ -1994,7 +1997,7 @@ const getTodayYMD = function () {
 // 复制
 const copyToClipboard = async (text) => {
   if (!text || text === '--') {
-    Funcs.Notify('提示', '无可复制的内容', 'warning');
+    Funcs.Notify(tt('runtime.prompt', '提示'), tt('runtime.noCopyContent', '无可复制的内容'), 'warning');
     return;
   }
 

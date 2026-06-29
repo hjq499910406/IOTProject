@@ -26,7 +26,7 @@
             </div>
             <t-button v-if="isPC"
                       class="tr-button-primary"
-                      label="保存"
+                      :label="tt('common.save', '保存')"
                       :showHint="true"
                       :tabIndex="1"
                       @click="saveSettings">
@@ -34,11 +34,11 @@
         </div>
         <div class="tr-div-drawer detail-drawer-content ">
             <div class="chart-section">
-                <div class="strategy-section-title">运行曲线</div>
+                <div class="strategy-section-title">{{ tt('strategy.runCurve', '运行曲线') }}</div>
                 <div ref="strategyChartRef" class="strategy-chart"></div>
             </div>
             <div class="strategy-section">
-                <div class="strategy-section-title">充电时段</div>
+                <div class="strategy-section-title">{{ tt('strategy.chargePeriod', '充电时段') }}</div>
                 <transition-group name="range-list"
                                   tag="div"
                                   class="strategy-time-list">
@@ -60,7 +60,7 @@
                                       v-model="range.start"
                                       @change="() => onRangeChange(range, 'start', 'charge')">
                             </t-select>
-                            <span class="time-separator">至</span>
+                            <span class="time-separator">{{ tt('common.to', '至') }}</span>
                             <t-select style='opacity:100%'
                                       class='tr-datetime-div time-input'
                                       itemsDataSourceType='static'
@@ -80,7 +80,7 @@
                             <input class="power-input"
                                    :value="range.power"
                                    @input="(e) => onPowerInput(e, range, 'charge')"
-                                   placeholder="请输入限制功率"
+                                   :placeholder="tt('power.limitPlaceholder', '请输入限制功率')"
                                    type="text"
                                    inputmode="numeric" />
                             <span class="power-unit">kW</span>
@@ -91,10 +91,10 @@
                     </div>
                 </transition-group>
                 <div class="add-row"
-                     @click="addChargeRange">添加时间段</div>
+                     @click="addChargeRange">{{ tt('strategy.addTimePeriod', '添加时间段') }}</div>
             </div>
             <div class="strategy-section">
-                <div class="strategy-section-title">放电时段</div>
+                <div class="strategy-section-title">{{ tt('strategy.dischargePeriod', '放电时段') }}</div>
                 <transition-group name="range-list"
                                   tag="div"
                                   class="strategy-time-list">
@@ -116,7 +116,7 @@
                                       v-model="range.start"
                                       @change="() => onRangeChange(range, 'start', 'discharge')">
                             </t-select>
-                            <span class="time-separator">至</span>
+                            <span class="time-separator">{{ tt('common.to', '至') }}</span>
                             <t-select style='opacity:100%'
                                       class='tr-datetime-div time-input'
                                       itemsDataSourceType='static'
@@ -136,7 +136,7 @@
                             <input class="power-input"
                                    :value="range.power"
                                    @input="(e) => onPowerInput(e, range, 'discharge')"
-                                   placeholder="请输入限制功率"
+                                   :placeholder="tt('power.limitPlaceholder', '请输入限制功率')"
                                    type="text"
                                    inputmode="numeric" />
                             <span class="power-unit">kW</span>
@@ -147,19 +147,19 @@
                     </div>
                 </transition-group>
                 <div class="add-row"
-                     @click="addDischargeRange">添加时间段</div>
+                     @click="addDischargeRange">{{ tt('strategy.addTimePeriod', '添加时间段') }}</div>
             </div>
 
         </div>
         <div class="detail-drawer-footer">
             <t-button class="tr-button-primary detail-drawer-close-btn"
-                      label="保存"
+                      :label="tt('common.save', '保存')"
                       :showHint="true"
                       :tabIndex="1"
                       @click="saveSettings">
             </t-button>
             <t-button class="tr-button-default detail-drawer-close-btn"
-                      label="取消"
+                      :label="tt('common.cancel', '取消')"
                       :showHint="true"
                       :tabIndex="1"
                       @click="goBack">
@@ -170,7 +170,12 @@
 </template>
 
 <script setup>
+
+
+import { pageText } from '../i18n';
+const tt = pageText;
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+
 
 
 const Funcs = window.Funcs;
@@ -185,7 +190,7 @@ const getSessionParams = () => {
 const queryParams = TFF.common.api.Url.getParams() || {};
 const sessionParams = getSessionParams();
 const mergedParams = { ...sessionParams, ...queryParams };
-const pageTitle = ref(mergedParams.Title || '储能调度');
+const pageTitle = ref(mergedParams.Title || pageText('runtime.energyDispatch', '储能调度'));
 const stationId = ref(mergedParams.StaId || '');
 const isPC = ref(window.innerWidth >= 768);
 const updateIsPC = () => {
@@ -279,19 +284,19 @@ const saveSettings = () => {
         });
         if (!missingStart && !missingEnd && !missingPower) return '';
         const parts = [];
-        if (missingStart) parts.push('开始时间');
-        if (missingEnd) parts.push('结束时间');
-        if (missingPower) parts.push('功率');
-        return `请补全${parts.join('、')}。`;
+        if (missingStart) parts.push(pageText('runtime.startTime', '开始时间'));
+        if (missingEnd) parts.push(pageText('runtime.endTime', '结束时间'));
+        if (missingPower) parts.push(pageText('runtime.power', '功率'));
+        return pageText('runtime.completeFields', '请补全{parts}。').replace('{parts}', parts.join('、'));
     };
     const chargeReason = getIncompleteRangeReason(chargeRanges.value);
     if (chargeReason) {
-        Funcs.Notify('提示', `充电时段${chargeReason}`, 'warning');
+        Funcs.Notify(pageText('runtime.prompt', '提示'), pageText('runtime.chargePeriodReason', '充电时段{reason}').replace('{reason}', chargeReason), 'warning');
         return;
     }
     const dischargeReason = getIncompleteRangeReason(dischargeRanges.value);
     if (dischargeReason) {
-        Funcs.Notify('提示', `放电时段${dischargeReason}`, 'warning');
+        Funcs.Notify(pageText('runtime.prompt', '提示'), pageText('runtime.dischargePeriodReason', '放电时段{reason}').replace('{reason}', dischargeReason), 'warning');
         return;
     }
     if (!deviceInfo.DeviceId || !deviceInfo.DeviceKey) return;
@@ -309,17 +314,17 @@ const saveSettings = () => {
         data: { param: JSON.stringify(policy) }
     }).then((res) => {
         if (res.state == '0') {
-            Funcs.Notify('提示', '下发失败' + res.errmsg, 'error');
+            Funcs.Notify(pageText('runtime.prompt', '提示'), pageText('runtime.issueFail', '下发失败') + res.errmsg, 'error');
             return;
         }
-        Funcs.Notify('提示', '下发成功', 'success');
+        Funcs.Notify(pageText('runtime.prompt', '提示'), pageText('runtime.issueSuccess', '下发成功'), 'success');
         setTimeout(() => {
             goBack();
         }, 800);
 
     }).catch((e) => {
         console.error(e);
-        Funcs.Notify('提示', '下发失败', 'error');
+        Funcs.Notify(pageText('runtime.prompt', '提示'), pageText('runtime.issueFail', '下发失败'), 'error');
     });
 };
 
@@ -366,7 +371,7 @@ const fetchPolicy = () => {
         applyPolicyToRanges(policy);
     }).catch((e) => {
         console.error(e);
-        Funcs.Notify('提示', '获取策略配置失败', 'error');
+        Funcs.Notify(pageText('runtime.prompt', '提示'), pageText('runtime.strategyConfigFail', '获取策略配置失败'), 'error');
     });
 };
 
@@ -400,7 +405,7 @@ const fetchData = () => {
         }
     }).catch((e) => {
         console.error(e);
-        Funcs.Notify('提示', '获取策略配置失败', 'error');
+        Funcs.Notify(pageText('runtime.prompt', '提示'), pageText('runtime.strategyConfigFail', '获取策略配置失败'), 'error');
     });
 };
 
@@ -440,7 +445,7 @@ const onPowerInput = (event, range, type) => {
         const limitPower = getPowerLimit(type);
         if (numValue > limitPower) {
             numValue = limitPower;
-            Funcs.Notify('提示', `输入值已超过${type === 'charge' ? '充电' : '放电'}上限${limitPower}kW，已自动调整。`, 'warning');
+            Funcs.Notify(pageText('runtime.prompt', '提示'), pageText('runtime.powerExceeded', '输入值已超过{type}上限{power}kW，已自动调整。').replace('{type}', type === 'charge' ? pageText('runtime.charging', '充电') : pageText('runtime.discharging', '放电')).replace('{power}', limitPower), 'warning');
         }
         range.power = numValue;
     }
@@ -472,7 +477,7 @@ const onRangeChange = (range, field, type) => {
         nextTick(() => {
             clearField();
         });
-        Funcs.Notify('提示', '请重新选择，时间端不允许跨天。', 'warning');
+        Funcs.Notify(pageText('runtime.prompt', '提示'), pageText('runtime.timeRangeNoCrossDay', '请重新选择，时间端不允许跨天。'), 'warning');
         return;
     }
     const otherRanges = type === 'charge' ? dischargeRanges.value : chargeRanges.value;
@@ -487,7 +492,7 @@ const onRangeChange = (range, field, type) => {
         nextTick(() => {
             clearField();
         });
-        Funcs.Notify('提示', '充电与放电时段不允许交集。', 'warning');
+        Funcs.Notify(pageText('runtime.prompt', '提示'), pageText('runtime.chargeDischargeNoOverlap', '充电与放电时段不允许交集。'), 'warning');
     }
 };
 
@@ -689,7 +694,7 @@ const getStrategyChartOption = () => {
             itemWidth: 10,
             itemHeight: 2,
             textStyle: { color: 'rgba(0,0,0,0.65)' },
-            data: ['实时曲线', '调度曲线']
+            data: [pageText('runtime.realtimeCurve', '实时曲线'), pageText('runtime.scheduleCurve', '调度曲线')]
         },
         tooltip: {
             trigger: 'axis',
@@ -702,18 +707,18 @@ const getStrategyChartOption = () => {
                     return Number.isNaN(value) ? 0 : value;
                 };
                 const formatPower = (value) => {
-                    if (value === 0) return { label: '休眠', valueText: '0 kW' };
-                    if (value > 0) return { label: '充电', valueText: `${value.toFixed(0)} kW` };
-                    return { label: '放电', valueText: `${Math.abs(value).toFixed(0)} kW` };
+                    if (value === 0) return { label: pageText('runtime.sleep', '休眠'), valueText: '0 kW' };
+                    if (value > 0) return { label: pageText('runtime.charging', '充电'), valueText: `${value.toFixed(0)} kW` };
+                    return { label: pageText('runtime.discharging', '放电'), valueText: `${Math.abs(value).toFixed(0)} kW` };
                 };
-                const realtimeValue = getValue('实时曲线');
-                const scheduleValue = getValue('调度曲线');
+                const realtimeValue = getValue(pageText('runtime.realtimeCurve', '实时曲线'));
+                const scheduleValue = getValue(pageText('runtime.scheduleCurve', '调度曲线'));
                 const realtimeInfo = formatPower(realtimeValue);
                 const scheduleInfo = formatPower(scheduleValue);
                 return [
                     title,
-                    `实时${realtimeInfo.label} ${realtimeInfo.valueText}`,
-                    `调度${scheduleInfo.label} ${scheduleInfo.valueText}`
+                    `${pageText('runtime.realtime', '实时')}${realtimeInfo.label} ${realtimeInfo.valueText}`,
+                    `${pageText('strategy.dispatch', '调度')}${scheduleInfo.label} ${scheduleInfo.valueText}`
                 ].join('<br/>');
             }
         },
@@ -725,7 +730,7 @@ const getStrategyChartOption = () => {
                 left: grid.left - (isPC.value ? 24 : 0),
                 top: grid.top - (isPC.value ? 24 : 22),
                 style: {
-                    text: '充电',
+                    text: pageText('runtime.charging', '充电'),
                     fill: 'rgba(0,0,0,0.65)',
                     fontSize: 12
                 }
@@ -735,7 +740,7 @@ const getStrategyChartOption = () => {
                 left: grid.left - (isPC.value ? 24 : 0),
                 bottom: grid.bottom + (isPC.value ? 0 : -12),
                 style: {
-                    text: '放电',
+                    text: pageText('runtime.discharging', '放电'),
                     fill: 'rgba(0,0,0,0.65)',
                     fontSize: 12
                 }
@@ -743,7 +748,7 @@ const getStrategyChartOption = () => {
         ],
         series: [
             {
-                name: '实时曲线',
+                name: pageText('runtime.realtimeCurve', '实时曲线'),
                 type: 'line',
                 data: realtime,
                 step: 'middle',
@@ -752,7 +757,7 @@ const getStrategyChartOption = () => {
                 lineStyle: { width: 2, color: '#2CBF6E' }
             },
             {
-                name: '调度曲线',
+                name: pageText('runtime.scheduleCurve', '调度曲线'),
                 type: 'line',
                 data: schedule,
                 step: 'middle',

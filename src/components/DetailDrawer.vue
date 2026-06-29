@@ -29,13 +29,13 @@
                         </div>
                     </div>
                     <div v-if="showRealtimeChart" class="chart-section">
-                        <div class="strategy-section-title">发电实时曲线</div>
+                        <div class="strategy-section-title">{{ tt('detailDrawer.realtimeGenerationCurve', '发电实时曲线') }}</div>
                         <div ref="realtimeChartRef" class="strategy-chart"></div>
                     </div>
                 </slot>
             </div>
             <div class="detail-drawer-footer">
-                <t-button class="tr-button-primary detail-drawer-close-btn" label="关闭" :showHint="true" :tabIndex="1"
+                <t-button class="tr-button-primary detail-drawer-close-btn" :label="tt('common.close', '关闭')" :showHint="true" :tabIndex="1"
                     @click="closeDrawer">
                 </t-button>
             </div>
@@ -44,7 +44,12 @@
 </template>
 
 <script setup>
+
+
+import { pageText } from '../pages/i18n';
+const tt = pageText;
 import { computed, inject, nextTick, onUnmounted, ref, watch } from 'vue';
+
 
 const props = defineProps({
   modelValue: {
@@ -53,7 +58,7 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: '查看明细'
+    default: pageText('common.viewDetails', '查看明细')
   },
   items: {
     type: Array,
@@ -239,14 +244,14 @@ const getRealtimeChartOption = () => {
       itemWidth: 10,
       itemHeight: 2,
       textStyle: { color: 'rgba(0,0,0,0.65)' },
-      data: [ '发电' ]
+      data: [ pageText('runtime.generation', '发电') ]
     },
     tooltip: { trigger: 'axis' },
     xAxis: createAxis(),
     yAxis: createValueAxis(0, limit),
     series: [
       {
-        name: '发电',
+        name: pageText('runtime.generation', '发电'),
         type: 'line',
         data: charge,
         step: 'middle',
@@ -292,7 +297,7 @@ const fetchRealtimeData = () => {
     realtimeRaw.value = Array.isArray(data) ? data : [];
   }).catch((e) => {
     console.error(e);
-    Funcs.Notify('提示', '获取实时曲线失败', 'error');
+    Funcs.Notify(pageText('runtime.prompt', '提示'), pageText('runtime.realtimeCurveFail', '获取实时曲线失败'), 'error');
   });
 };
 

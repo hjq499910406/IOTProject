@@ -2,9 +2,9 @@
     <div class="tr-div-default monitorDiv" style="min-height: calc(100vh - 200px);">
         <t-label :ref="el => Widget['fasr_label_540f81'] = el" style="opacity:100%"
             class="fasr_label_540f81 tr-lable-keyindicatorsname" instanceCode="fasr_label_540f81" valueType="static"
-            :showHint="true" :tabIndex="1" constValue="设备列表">
+            :showHint="true" :tabIndex="1" :constValue="tt('device.list', '设备列表')">
         </t-label>
-        <div v-if="photoList.length == 0 || (photoList.length > 0 && independentItems.length == 0 && parentDevices.length == 0)" style="text-align: center;margin: 20px 0px;width: 100%;">无记录</div>
+        <div v-if="photoList.length == 0 || (photoList.length > 0 && independentItems.length == 0 && parentDevices.length == 0)" style="text-align: center;margin: 20px 0px;width: 100%;">{{ tt('common.noRecords', '无记录') }}</div>
         <div :ref="el => Widget['fasr_div_8c6106'] = el" style="    outline:0!important;"
             class="fasr_div_8c6106 tr-div-default" :tabIndex="-1" instanceCode="fasr_div_8c6106" v-if="photoList.length > 0 && independentItems.length > 0">
             <div v-if="independentItems.length > 0" class="photoDivChange">
@@ -19,7 +19,7 @@
                                 <div style="width: 100%;">
                                     <div class="deviceCardPhotoTitleRow">
                                         <span class="deviceCardTitleText titleBold">{{ item.DeviceName }}</span>
-                                        <span @click.stop="openDetail(item)" class="detail-icon" title="查看详情">
+                                        <span @click.stop="openDetail(item)" class="detail-icon" :title="tt('common.viewDetails', '查看详情')">
                                             详情
                                             <t-icon style="opacity:100%" class="lockIcon tr-icon-default"
                                                 instanceCode="lockIcon" size="12px" :tabIndex="1"
@@ -34,12 +34,12 @@
                             </div>
                             <div class="deviceBtn">
                                 <t-button :ref="el => Widget['fasr_button_ed5180'] = el" style="flex: 2;"
-                                    class="fasr_button_ed5180 tr-button-default fasr_button_viceColor" label="实时画面"
+                                    class="fasr_button_ed5180 tr-button-default fasr_button_viceColor" :label="tt('video.liveView', '实时画面')"
                                     instanceCode="fasr_button_ed5180" icon="fas dx-icon icon-t-camera" :showHint="true"
                                     :tabIndex="1" @click="openVideoModal(item)">
                                 </t-button>
                                 <t-button :ref="el => Widget['fasr_button_ed5180'] = el" style="flex: 2;"
-                                    class="fasr_button_ed5180 tr-button-default" label="回看"
+                                    class="fasr_button_ed5180 tr-button-default" :label="tt('video.playback', '回看')"
                                     instanceCode="fasr_button_ed5180" icon="fas dx-icon icon-t-undo" :showHint="true"
                                     :tabIndex="1" @click="openReplay(item)">
                                 </t-button>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="photoList.length == 0" style="text-align: center;margin: 20px 0px;width: 100%;">无记录</div>
+            <div v-if="photoList.length == 0" style="text-align: center;margin: 20px 0px;width: 100%;">{{ tt('common.noRecords', '无记录') }}</div>
         </div>
         <div class="accordion-container">
             <div v-for="parent in parentDevices" :key="parent.DeviceKey" class="accordion-item">
@@ -110,7 +110,7 @@
                                     <div style="width: 100%;">
                                         <div class="deviceCardPhotoTitleRow">
                                             <span class="deviceCardTitleText titleBold">{{ item.DeviceName }}</span>
-                                            <span @click.stop="openDetail(item)" class="detail-icon" title="查看详情">
+                                            <span @click.stop="openDetail(item)" class="detail-icon" :title="tt('common.viewDetails', '查看详情')">
                                                 详情
                                                 <t-icon style="opacity:100%" class="lockIcon tr-icon-default"
                                                     instanceCode="lockIcon" size="12px" :tabIndex="1"
@@ -124,11 +124,11 @@
                                 </div>
                                 <div class="deviceBtn">
                                     <t-button style="flex: 2;"
-                                        class="fasr_button_ed5180 tr-button-default fasr_button_viceColor" label="实时画面"
+                                        class="fasr_button_ed5180 tr-button-default fasr_button_viceColor" :label="tt('video.liveView', '实时画面')"
                                         icon="fas dx-icon icon-t-camera" :showHint="true" :tabIndex="1"
                                         @click="openVideoModal(item)"></t-button>
                                     <t-button style="flex: 2;" class="fasr_button_ed5180 tr-button-default"
-                                        label="回看" icon="fas dx-icon icon-t-undo" :showHint="true" :tabIndex="1"
+                                        :label="tt('video.playback', '回看')" icon="fas dx-icon icon-t-undo" :showHint="true" :tabIndex="1"
                                         @click="openReplay(item)"></t-button>
                                     <t-btn-group style="" class="btnGroup_lock" :staticItems="[
                                         {
@@ -156,6 +156,11 @@
 </template>
 
 <script setup>
+
+
+
+import { pageText } from '../pages/i18n';
+const tt = pageText;
 const Widget = window.Widget;
 defineProps({
   photoList: {

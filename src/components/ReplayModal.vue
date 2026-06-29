@@ -9,7 +9,7 @@
 
       <!-- 日期区域 -->
       <div class="datetime-section">
-        <div class="section-title">日期</div>
+        <div class="section-title">{{ tt('common.date', '日期') }}</div>
         <div class="date-inputs">
           <input
             type="date"
@@ -40,20 +40,20 @@
         </div>
 
         <!-- 时间区域 -->
-        <div class="section-title" style="margin-top: 20px">时间（HH:mm:ss ~ HH:mm:ss）</div>
+        <div class="section-title" style="margin-top: 20px">{{ tt('common.timeRange', '时间（HH:mm:ss ~ HH:mm:ss）') }}</div>
         <div class="time-inputs">
           <input
             type="text"
             v-model="selectedTime"
             readonly
-            placeholder="如 00:00:00 ~ 23:59:59"
+            :placeholder="tt('video.timeRangeExample', '如 00:00:00 ~ 23:59:59')"
             class="time-input"
             @blur="validateTime"
           />
           <t-button
             style='margin-right: 8px;'
             class='tr-button-default'
-            label='加载视频'
+            :label="tt('video.loadVideo', '加载视频')"
             instanceCode='fasr_button_123'
             :showHint='true'
             :tabIndex='1'
@@ -93,15 +93,20 @@
                 />
             </div>
         </div>
-        <div v-if="loading" class="placeholder">加载中...</div>
+        <div v-if="loading" class="placeholder">{{ tt('common.loading', '加载中...') }}</div>
       </div>
     </div>
   </Teleport>
 </template>
 
 <script setup>
+
+import { pageText } from '../pages/i18n';
+const tt = pageText;
+
 import { ref, computed, onMounted } from 'vue';
 import HlsPlayer from './HlsPlayer.vue';
+
 
 const props = defineProps({
   visible: { type: Boolean, default: false },

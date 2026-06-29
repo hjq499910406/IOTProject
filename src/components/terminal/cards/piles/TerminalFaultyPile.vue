@@ -3,11 +3,11 @@
         <div class="terminal-pile-card">
             <div v-if="LocalVars.pile.PileID" class="item-title terminal-pile-card__order-trigger"
                 @click="showOrderCard">
-                <i class="i-link terminal-pile-card__order-text">订</i>
+                <i class="i-link terminal-pile-card__order-text">{{ tt('order.short') }}</i>
             </div>
             <div class="terminal-pile-card__content">
                 <div>
-                    <span class="terminal-pile-card__badge">故障</span>
+                    <span class="terminal-pile-card__badge">{{ tt('status.fault') }}</span>
                     <span class="terminal-pile-card__title">{{ LocalVars.pile.PileName }}</span>
                 </div>
                 <div class="terminal-pile-card__top-row">
@@ -40,9 +40,7 @@
                             </div>
                         </div>
                         <div class="terminal-pile-card__summary-row">
-                            <span class="terminal-pile-card__summary-label">
-                                {{ $t('Schema.Page.UCFaultyTerminal.Controls.fasr_label_e314381_Copy.ConstValue', '处理建议:') }}
-                            </span>
+                            <span class="terminal-pile-card__summary-label">{{ tt('terminal.faultAdvice') }}</span>
                             <span class="terminal-pile-card__summary-value">{{ faultAdviceText }}</span>
                         </div>
                     </div>
@@ -59,7 +57,7 @@
                                 'terminal-pile-card__field-label',
                                 detail.danger ? 'terminal-pile-card__field-label--danger' : ''
                             ]">
-                                {{ $t(detail.key, detail.fallback) }}
+                                {{ tt(detail.key) }}
                             </span>
                             <span class="terminal-pile-card__field-value">{{ detail.value }}</span>
                         </div>
@@ -82,9 +80,14 @@
     </div>
 </template>
 <script setup>
+
+import { pageText } from '../../../../pages/i18n';
+const tt = pageText;
+
 import { computed } from 'vue';
 import LastChargeOrderDialog from '../../shared/LastChargeOrderDialog.vue';
 import { useLastChargeOrder } from '../../shared/useLastChargeOrder.js';
+
 
 const { TeldProductVersionType } = window;
 const DETAIL_PLACEHOLDER = '--';
@@ -94,12 +97,11 @@ const props = defineProps({
 });
 
 const LocalVars = props.localVars;
-const showFaultReason = computed(() => LocalVars.pile.FaultReason && LocalVars.pile.FaultReason !== '无');
+const showFaultReason = computed(() => LocalVars.pile.FaultReason && LocalVars.pile.FaultReason !== DETAIL_PLACEHOLDER);
 const faultAdviceText = computed(() => LocalVars.pile.FaultRemoveAdvice || DETAIL_PLACEHOLDER);
 const detailRows = computed(() => [
     {
-        key: 'Schema.Page.UCFaultyTerminal.Controls.fasr_label_e536747_Copy.ConstValue',
-        fallback: '故障率（近3天）:',
+        key: 'terminal.faultRateRecent3Days',
         value: LocalVars.pile.FaultRate || DETAIL_PLACEHOLDER,
         danger: true
     }

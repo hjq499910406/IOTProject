@@ -1,5 +1,5 @@
 <template>
-    <t-dialog v-model:show="dialogVisible" :position="position">
+    <t-dialog v-model:show="dialogVisible" :position="dialogPosition">
         <div :class="['last-charge-order-dialog', dialogClass]">
             <div class="last-charge-order-dialog__header">
                 <span class="last-charge-order-dialog__title">{{ title }}</span>
@@ -40,7 +40,7 @@
                     />
                 </div>
                 <span slot="footer" class="last-charge-order-dialog__footer">
-                    <t-button flat label="关闭" :class="closeButtonClass" @click="dialogVisible = false" />
+                    <t-button flat :label="tt('common.close')" :class="closeButtonClass" @click="dialogVisible = false" />
                 </span>
             </div>
         </div>
@@ -48,7 +48,12 @@
 </template>
 
 <script setup>
+
+import { pageText } from '../../../pages/i18n';
+const tt = pageText;
+
 import { computed } from 'vue';
+
 
 const DETAIL_PLACEHOLDER = '--';
 
@@ -72,34 +77,36 @@ const dialogVisible = computed({
     set: (value) => emit('update:show', value)
 });
 
+const dialogPosition = computed(() => props.position || (window.isPC() ? 'standard' : 'bottom'));
+
 function getDetailValue(value) {
     return value == null || value === '' ? DETAIL_PLACEHOLDER : String(value);
 }
 
 const summaryItems = computed(() => [
     {
-        label: '订单编号：',
+        label: tt('order.orderNumber'),
         value: getDetailValue(props.orderCardInfo.Code),
         clickable: true
     },
     {
-        label: '开始时间：',
+        label: tt('order.startTime'),
         value: getDetailValue(props.orderCardInfo.BeginTime_Str)
     },
     {
-        label: '结束时间：',
+        label: tt('order.endTime'),
         value: getDetailValue(props.orderCardInfo.EndTime_Str)
     },
     {
-        label: '总电量（度）：',
+        label: tt('order.totalEnergy'),
         value: getDetailValue(props.orderCardInfo.Power_Str)
     },
     {
-        label: '充电费用（元）：',
+        label: tt('order.chargingFee'),
         value: props.totalPriceText
     },
     {
-        label: '充电人：',
+        label: tt('order.customerName'),
         value: getDetailValue(props.orderCardInfo.CustName)
     }
 ]);

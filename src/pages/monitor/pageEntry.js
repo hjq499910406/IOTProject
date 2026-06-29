@@ -3,19 +3,17 @@
 import { createApp } from 'vue'
 // import { createPinia } from 'pinia'
 
-import App from './monitor.vue'
+import App from './TerminalMonitor.vue'
 // import router from './router'
 import { createI18n } from 'vue-i18n'
 
-let teldLocale = TFF.common.storage.Cookie.read('teld_locale')
-if(!teldLocale){
-  teldLocale = TFF.common.storage.Cookie.read('wrp_locale')
+let tLocale = TFF.common.storage.Cookie.read('t_locale')
+
+if(!tLocale && navigator.language){ 
+  tLocale = navigator.language;
 }
-if(!teldLocale && navigator.language){ 
-  teldLocale = navigator.language;
-}
-if(!teldLocale){
-  teldLocale = 'zh-CN'
+if(!tLocale || tLocale == 'zh'){
+  tLocale = 'zh-CN'
 }
 
 const app = createApp(App)
@@ -67,34 +65,18 @@ if(window['Vue']){
     };
   }
   
-  app.use(window.TField.default, {language: teldLocale})
+  app.use(window.TSelectHelper.default, {language: teldLocale})
   
   app.use(window.TButton.default, {language: teldLocale})
   
-  app.use(window.TSelectHelper.default, {language: teldLocale})
-  
   app.use(window.TSelect.default, {language: teldLocale})
-  
-  app.use(window.TTabs.default, {language: teldLocale})
-  
-  app.use(window.TTabPanel.default, {language: teldLocale})
-  
-  app.use(window.TLabel.default, {language: teldLocale})
-  
-  app.use(window.TIcon.default, {language: teldLocale})
-  
-  app.use(window.TBadge.default, {language: teldLocale})
-  
-  app.use(window.TButtonGroup.default, {language: teldLocale})
-  
-  app.use(window.TExpansion.default, {language: teldLocale})
-  
-  app.use(window.TExpansionItem.default, {language: teldLocale})
   
   app.use(window.TDialog.default, {language: teldLocale})
   
+  app.use(window.TLabel.default, {language: teldLocale})
+  
 }
-app.mount('#monitor',{
+app.mount('#TerminalMonitor',{
   language: teldLocale
 })
 

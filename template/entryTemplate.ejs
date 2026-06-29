@@ -6,27 +6,28 @@ import { createApp } from 'vue'
 import App from './<%= pageName%>.vue'
 // import router from './router'
 import { createI18n } from 'vue-i18n'
+import { injectAppLocaleMessages, pageT } from '../i18n'
 
-let teldLocale = TFF.common.storage.Cookie.read('teld_locale') || TFF.common.storage.Cookie.read('t_locale')
-if(!teldLocale){
-  teldLocale = TFF.common.storage.Cookie.read('wrp_locale')
+let tLocale = TFF.common.storage.Cookie.read('t_locale')
+
+if(!tLocale && navigator.language){ 
+  tLocale = navigator.language;
 }
-if(!teldLocale && navigator.language){ 
-  teldLocale = navigator.language;
-}
-if(!teldLocale){
-  teldLocale = 'zh-CN'
+if(!tLocale || tLocale == 'zh'){
+  tLocale = 'zh-CN'
 }
 
 const app = createApp(App)
+app.config.globalProperties.tt = pageT
 
+injectAppLocaleMessages(tLocale)
 const messages = {};
-messages[teldLocale] = mergeI18nData(window.localeMessage)??{}
+messages[tLocale] = mergeI18nData(window.localeMessage)??{}
 
 
 const i18n = createI18n({
   legacy:false,
-  locale: teldLocale, 
+  locale: tLocale, 
   messages,
 })
 app.use(i18n)
@@ -38,7 +39,7 @@ if(window['Vue']){
   let langObject = window.TComponentsLang.zhCN;
   for(var key in window.TComponentsLang){
     let langVal = window.TComponentsLang[key];
-    if(langVal && langVal.isoName == teldLocale){
+    if(langVal && langVal.isoName == tLocale){
       langObject = langVal;
       break;
     }
@@ -67,11 +68,11 @@ if(window['Vue']){
     };
   }
   <% for(let index in dependencies.components){%>
-  app.use(window.<%=dependencies.components[index] %>.default, {language: teldLocale})
+  app.use(window.<%=dependencies.components[index] %>.default, {language: tLocale})
   <% }%>
 }
 app.mount('#<%= pageName %>',{
-  language: teldLocale
+  language: tLocale
 })
 
 window.fasAppInstance = app;

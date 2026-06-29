@@ -16,7 +16,7 @@
             </div>
             <div class="tr-div-drawer detail-drawer-content">
                 <div class="strategy-section">
-                    <div class="strategy-section-title">充电时段</div>
+                    <div class="strategy-section-title">{{ tt('strategy.chargePeriod', '充电时段') }}</div>
                     <transition-group name="range-list" tag="div" class="strategy-time-list">
                         <div v-for="(range, index) in chargeRanges" :key="range.id" class="time-row">
                             <div class="time-input-container">
@@ -26,7 +26,7 @@
                                     :visible='true' :staticItems='timeSelectItems' v-model="range.start"
                                     @change="() => onRangeChange(range, 'start', 'charge')">
                                 </t-select>
-                                <span class="time-separator">至</span>
+                                <span class="time-separator">{{ tt('common.to', '至') }}</span>
                                 <t-select style='opacity:100%' class='tr-datetime-div time-input'
                                     itemsDataSourceType='static' :clearable='true' :useInput='true'
                                     helpPlacement='bottom' :readonly='false' optionsPosition='' :disable='false'
@@ -37,17 +37,17 @@
                             <!-- 增加一个功率的输入框 右侧有单位kW -->
                             <div class="power-input-container">
                                 <input class="power-input" :value="range.power" @input="(e) => onPowerInput(e, range)"
-                                    placeholder="输入功率" type="text" inputmode="numeric" />
+                                    :placeholder="tt('power.inputPower', '输入功率')" type="text" inputmode="numeric" />
                                 <span class="power-unit">kW</span>
                             </div>
                             <span v-html="removeSvg" class="remove-btn" @click="removeChargeRange(index)"></span>
 
                         </div>
                     </transition-group>
-                    <div class="add-row" @click="addChargeRange">添加时间段</div>
+                    <div class="add-row" @click="addChargeRange">{{ tt('strategy.addTimePeriod', '添加时间段') }}</div>
                 </div>
                 <div class="strategy-section">
-                    <div class="strategy-section-title">放电时段</div>
+                    <div class="strategy-section-title">{{ tt('strategy.dischargePeriod', '放电时段') }}</div>
                     <transition-group name="range-list" tag="div" class="strategy-time-list">
                         <div v-for="(range, index) in dischargeRanges" :key="range.id" class="time-row">
                             <div class="time-input-container">
@@ -57,7 +57,7 @@
                                     :visible='true' :staticItems='timeSelectItems' v-model="range.start"
                                     @change="() => onRangeChange(range, 'start', 'discharge')">
                                 </t-select>
-                                <span class="time-separator">至</span>
+                                <span class="time-separator">{{ tt('common.to', '至') }}</span>
                                 <t-select style='opacity:100%' class='tr-datetime-div time-input'
                                     itemsDataSourceType='static' :clearable='true' :useInput='true'
                                     helpPlacement='bottom' :readonly='false' optionsPosition='' :disable='false'
@@ -67,25 +67,25 @@
                             </div>
                             <div class="power-input-container ">
                                 <input class="power-input" :value="range.power" @input="(e) => onPowerInput(e, range)"
-                                    placeholder="输入功率" type="text" inputmode="numeric" />
+                                    :placeholder="tt('power.inputPower', '输入功率')" type="text" inputmode="numeric" />
                                 <span class="power-unit">kW</span>
                             </div>
                             <span v-html="removeSvg" class="remove-btn" @click="removeDischargeRange(index)"></span>
 
                         </div>
                     </transition-group>
-                    <div class="add-row" @click="addDischargeRange">添加时间段</div>
+                    <div class="add-row" @click="addDischargeRange">{{ tt('strategy.addTimePeriod', '添加时间段') }}</div>
                 </div>
                 <div class="strategy-section">
-                    <div class="strategy-section-title">运行曲线</div>
+                    <div class="strategy-section-title">{{ tt('strategy.runCurve', '运行曲线') }}</div>
                     <div ref="chartRef" class="strategy-chart"></div>
                 </div>
             </div>
             <div class="detail-drawer-footer">
-                <t-button class="tr-button-default detail-drawer-close-btn" label="取消" :showHint="true" :tabIndex="1"
+                <t-button class="tr-button-default detail-drawer-close-btn" :label="tt('common.cancel', '取消')" :showHint="true" :tabIndex="1"
                     @click="closeDrawer">
                 </t-button>
-                <t-button class="tr-button-primary detail-drawer-close-btn" label="调度" :showHint="true" :tabIndex="1"
+                <t-button class="tr-button-primary detail-drawer-close-btn" :label="tt('strategy.dispatch', '调度')" :showHint="true" :tabIndex="1"
                     @click="saveSettings">
                 </t-button>
             </div>
@@ -94,7 +94,12 @@
 </template>
 
 <script setup>
+
+
+import { pageText } from '../pages/i18n';
+const tt = pageText;
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+
 
 
 const props = defineProps({

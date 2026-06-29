@@ -1,4 +1,7 @@
-const DEFAULT_CTRL_OPTION = { label: '全部集控器', value: '' };
+import { pageText } from '../../../pages/i18n';
+
+const tt = pageText;
+const DEFAULT_CTRL_OPTION = { label: tt('terminal.allControllers'), value: '' };
 
 function isSuccess(result) {
   return result?.state == '1';

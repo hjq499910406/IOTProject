@@ -13,7 +13,7 @@
             您的浏览器不支持 video 标签。
         </video>
     <!-- 👇 新增：离线标签 -->
-    <div v-if="props.item.NetState != 1" class="offline-tag">设备离线</div>
+    <div v-if="props.item.NetState != 1" class="offline-tag">{{ tt('device.offline', '设备离线') }}</div>
 
     <!-- 点击提示 (播放图标) -->
     <div v-if="!hasPlayed && !loading" class="overlay" @click.stop="handleClick">
@@ -31,8 +31,13 @@
 </template>
 
 <script setup>
+
+import { pageText } from '../pages/i18n';
+const tt = pageText;
+
 import { ref, onBeforeUnmount, computed } from 'vue';
 import Hls from 'hls.js';
+
 
 const props = defineProps({
   item: {

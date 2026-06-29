@@ -41,13 +41,13 @@
             </div>
             <div class="power-limitation-footer">
                 <t-button class="tr-button-default power-action-btn"
-                          label="取消"
+                          :label="tt('common.cancel', '取消')"
                           :showHint="true"
                           :tabIndex="1"
                           @click="handleCancel">
                 </t-button>
                 <t-button class="tr-button-primary power-action-btn"
-                          label="确定"
+                          :label="tt('common.confirm', '确定')"
                           :showHint="true"
                           :tabIndex="1"
                           @click="handleConfirm">
@@ -58,7 +58,12 @@
 </template>
 
 <script setup>
+
+import { pageText } from '../pages/i18n';
+const tt = pageText;
+
 import { computed, inject, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+
 
 const props = defineProps({
   modelValue: {
