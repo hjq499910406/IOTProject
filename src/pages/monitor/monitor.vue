@@ -2001,14 +2001,21 @@ const copyToClipboard = async (text) => {
     return;
   }
 
-  try {
-    await navigator.clipboard.writeText(text);
-    Funcs.Notify('成功', '已复制到剪贴板', 'success');
+  if (navigator.clipboard?.writeText && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text);
+      Funcs.Notify(tt('common.success', '成功'), tt('runtime.copySuccess', '已复制到剪贴板'), 'success');
+      return;
+    }
+    catch (err) {
+      fallbackCopyText(text);
+      return;
+    }
   }
-  catch (err) {
-    fallbackCopyText(text);
-  }
+
+  fallbackCopyText(text);
 };
+
 const formatTime = (time) => {
   const d = new Date(time);
 
@@ -2027,10 +2034,10 @@ const fallbackCopyText = (text) => {
   textarea.select();
   try {
     document.execCommand('copy');
-    Funcs.Notify('成功', '已复制到剪贴板', 'success');
+    Funcs.Notify(tt('common.success', '成功'), tt('runtime.copySuccess', '已复制到剪贴板'), 'success');
   }
   catch (err) {
-    Funcs.Notify('错误', '复制失败，请手动复制', 'error');
+    Funcs.Notify(tt('common.error', '错误'), tt('runtime.copyFail', '复制失败，请手动复制'), 'error');
   }
   document.body.removeChild(textarea);
 };
@@ -2094,6 +2101,26 @@ const getStatusClass = (netState) => {
   if (netState === 2) return 'offline';
   return 'gray';
 };
+
+const detailItems = computed(() => {
+  const detail = currentDetail.value || {};
+  return [
+    { label: '设备编号', value: detail.DeviceKey || '--' },
+    { label: '设备类型', value: DeviceType[detail.DeviceType] || '--' },
+    { label: '统一编码', value: detail.UnifiedId },
+    { label: '国标设备名称', value: detail.GbDeviceName },
+    { label: '设备制造商', value: detail.Manufacturer },
+    { label: '设备型号', value: detail.Model },
+    { label: '父级设备', value: detail.ParentID },
+    { label: '网络地址', value: detail.HostAddress },
+    { label: '本地IP', value: detail.LocalIp },
+    { label: '流传输模式', value: StreamTransport[detail.StreamTransport] || '--' },
+    { label: '信令传输模式', value: SignalTransport[detail.SignalTransport] || '--' },
+    { label: '最近抓拍图片地址', value: detail.LastSnapshot || '--' },
+    { label: '设备上线时间', value: detail.ModuleSoftVersion || '--' },
+    { label: '设备下线时间', value: detail.ModuleHardVersion || '--' },
+  ];
+});
 </script>
 <style>
 .DispatchTab .fasr_tabs_494f6b .q-card {

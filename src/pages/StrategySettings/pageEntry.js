@@ -3,9 +3,10 @@
 import { createApp } from 'vue'
 // import { createPinia } from 'pinia'
 
-import App from './TerminalMonitor.vue'
+import App from './StrategySettings.vue'
 // import router from './router'
 import { createI18n } from 'vue-i18n'
+import { injectAppLocaleMessages, pageT } from '../i18n'
 
 let tLocale = TFF.common.storage.Cookie.read('t_locale')
 
@@ -17,14 +18,16 @@ if(!tLocale || tLocale == 'zh'){
 }
 
 const app = createApp(App)
+app.config.globalProperties.tt = pageT
 
+injectAppLocaleMessages(tLocale)
 const messages = {};
-messages[teldLocale] = mergeI18nData(window.localeMessage)??{}
+messages[tLocale] = mergeI18nData(window.localeMessage)??{}
 
 
 const i18n = createI18n({
   legacy:false,
-  locale: teldLocale, 
+  locale: tLocale, 
   messages,
 })
 app.use(i18n)
@@ -36,7 +39,7 @@ if(window['Vue']){
   let langObject = window.TComponentsLang.zhCN;
   for(var key in window.TComponentsLang){
     let langVal = window.TComponentsLang[key];
-    if(langVal && langVal.isoName == teldLocale){
+    if(langVal && langVal.isoName == tLocale){
       langObject = langVal;
       break;
     }
@@ -65,19 +68,35 @@ if(window['Vue']){
     };
   }
   
-  app.use(window.TSelectHelper.default, {language: teldLocale})
+  app.use(window.TField.default, {language: tLocale})
   
-  app.use(window.TButton.default, {language: teldLocale})
+  app.use(window.TButton.default, {language: tLocale})
   
-  app.use(window.TSelect.default, {language: teldLocale})
+  app.use(window.TSelectHelper.default, {language: tLocale})
   
-  app.use(window.TDialog.default, {language: teldLocale})
+  app.use(window.TSelect.default, {language: tLocale})
   
-  app.use(window.TLabel.default, {language: teldLocale})
+  app.use(window.TTabs.default, {language: tLocale})
+  
+  app.use(window.TTabPanel.default, {language: tLocale})
+  
+  app.use(window.TLabel.default, {language: tLocale})
+  
+  app.use(window.TIcon.default, {language: tLocale})
+  
+  app.use(window.TBadge.default, {language: tLocale})
+  
+  app.use(window.TButtonGroup.default, {language: tLocale})
+  
+  app.use(window.TExpansion.default, {language: tLocale})
+  
+  app.use(window.TExpansionItem.default, {language: tLocale})
+  
+  app.use(window.TDialog.default, {language: tLocale})
   
 }
-app.mount('#TerminalMonitor',{
-  language: teldLocale
+app.mount('#StrategySettings',{
+  language: tLocale
 })
 
 window.fasAppInstance = app;

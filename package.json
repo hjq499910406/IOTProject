@@ -5,9 +5,8 @@
   "scripts": {
     "dev": "pnpm run vite:dev",
     "vite:dev": "pnpm install && vite",
-    "build": "run-p type-check \"build-only {@}\" --",
     "prebuild:page": "echo need to set: nvm use 18.18.0",
-    "build:all": "node ./scripts/buildAllPages.mjs",
+    "build": "node ./scripts/buildAllPages.mjs",
     "build:pages": "node ./scripts/buildPage.mjs",
     "build:portals": "node ./scripts/buildAllPortals.mjs",
     "build:portal": "node ./scripts/buildPortal.mjs",
